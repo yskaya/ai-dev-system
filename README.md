@@ -78,14 +78,14 @@ Each target writes `dist/<target>/manifest.json` listing generated paths. Filter
 From any project directory — no clone, no Python:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ykanapatskaya/ai-dev-system/main/scripts/install-remote.sh | bash
+curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash
 ```
 
 With options:
 
 ```bash
 # target directory (default: cwd)
-curl -fsSL https://raw.githubusercontent.com/ykanapatskaya/ai-dev-system/main/scripts/install-remote.sh | bash -s -- /path/to/your-project
+curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash -s -- /path/to/your-project
 
 # Cursor only
 curl -fsSL ... | bash -s -- --cursor-only .
@@ -94,7 +94,7 @@ curl -fsSL ... | bash -s -- --cursor-only .
 AI_DEV_SYSTEM_VERSION=v1.0.0 curl -fsSL ... | bash
 ```
 
-Downloads the latest [GitHub release](https://github.com/ykanapatskaya/ai-dev-system/releases) asset (`ai-dev-system-dist.tar.gz`). If no release exists yet, falls back to the `main` branch source archive (uses committed `dist/`).
+Downloads the latest [GitHub release](https://github.com/yskaya/ai-dev-system/releases) asset (`ai-dev-system-dist.tar.gz`). If no release exists yet, falls back to the `main` branch source archive (uses committed `dist/`).
 
 Environment overrides: `AI_DEV_SYSTEM_REPO`, `AI_DEV_SYSTEM_VERSION`, `AI_DEV_SYSTEM_REF`.
 

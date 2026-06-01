@@ -39,10 +39,10 @@ Install once per project — see [Remote install](#remote-install) below or [REA
 From your app repo (no clone, no Python):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ykanapatskaya/ai-dev-system/main/scripts/install-remote.sh | bash
+curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash
 ```
 
-This copies predefined rules, commands, skills, and schemas into `.cursor/` (and `.claude/` unless you pass `--cursor-only`). Pin a version with `AI_DEV_SYSTEM_VERSION=v1.0.0` when [releases](https://github.com/ykanapatskaya/ai-dev-system/releases) exist.
+This copies predefined rules, commands, skills, and schemas into `.cursor/` (and `.claude/` unless you pass `--cursor-only`). Pin a version with `AI_DEV_SYSTEM_VERSION=v1.0.0` when [releases](https://github.com/yskaya/ai-dev-system/releases) exist.
 
 Then work entirely inside your repo's `.cursor/` or `.claude/` tree.
 
