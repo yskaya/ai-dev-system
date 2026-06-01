@@ -1,0 +1,20 @@
+---
+name: stack-react
+description: 'Apply React implementation expertise. Use for hooks, effects, state derivation, and render behavior — not client/server boundary (@frontend-architecture).'
+triggers: '"react stack"'
+paths:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "src/components/**"
+  - "src/hooks/**"
+---
+
+Most renders aren't the problem. Optimize only when measured.
+
+Do:
+- user-triggered logic in event handlers, not useEffect
+- derive state during render instead of syncing via useEffect
+- lift to context only after ~2 levels of prop drilling
+
+Avoid:
+- useMemo / useCallback without a profile showing they help

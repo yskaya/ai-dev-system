@@ -1,0 +1,25 @@
+name: realtime
+description: Apply real-time transport expertise. Use for WebSocket, SSE, or subscription design when layered via @realtime
+
+triggers:
+  - realtime
+  - WebSocket
+  - SSE
+  - streaming
+  - live updates
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+sections:
+  - Data flow        # live/streaming paths only
+  - Key decisions    # transport, subscription, scaling only
+
+body: |
+  Do:
+  - choose WebSocket vs SSE by directionality; define subscription lifecycle
+  - batch high-frequency updates; handle disconnect, retry, and re-auth on reconnect
+
+  Avoid:
+  - WebSockets when unidirectional SSE suffices
+  - query-string auth tokens on long-lived connections
+  - stateful connections without a pub/sub scaling path

@@ -1,0 +1,20 @@
+name: monorepo
+description: Apply monorepo expertise for package boundaries and workspace layout. Layer via @monorepo when workspace structure or cross-package dependencies are in scope.
+
+triggers:
+  - monorepo
+  - workspace
+  - package boundaries
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+sections:
+  - System structure   # packages, workspace layout, cross-package deps only
+  - Key decisions        # workspace tooling and boundary tradeoffs only
+
+body: |
+  Do:
+  - one named domain per package; one shared package for cross-cutting code — not a grab-bag
+
+  Avoid:
+  - circular imports between packages

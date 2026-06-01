@@ -1,0 +1,27 @@
+DESIGN.md:
+  path: schemas/DESIGN.md
+  description: Full-stack architecture design — modules, boundaries, contracts, data flow, AI system, scaling
+
+PLAN.md:
+  path: schemas/PLAN.md
+  description: Implementation plan with milestones, independently-testable tasks, success criteria
+
+BRIEF.md:
+  path: schemas/BRIEF.md
+  description: Product brief for new products/greenfield — user problem, MVP, non-goals
+
+REVIEW.md:
+  path: schemas/REVIEW.md
+  description: Code/architecture/security review — findings ranked P0–P3, recommendations
+
+ISSUES.md:
+  path: schemas/ISSUES.md
+  description: Defects and risks — root causes, minimal fixes, regression analysis
+
+SETUP.md:
+  path: schemas/SETUP.md
+  description: New codebase or module scaffold — structure, entry points, exports, known issues
+
+REFACTOR.md:
+  path: schemas/REFACTOR.md
+  description: Phased refactoring plan — changes per phase, risk mitigation, success criteria

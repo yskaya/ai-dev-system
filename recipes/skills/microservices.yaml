@@ -1,0 +1,25 @@
+name: microservices
+description: Apply microservices decomposition expertise. Layer via @set-microservice or @microservices when service splits or cross-service boundaries are in scope.
+
+triggers:
+  - microservices
+  - service split
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+sections:
+  - System structure   # service decomposition + ownership only
+  - Data flow            # sync/async boundaries + cross-service calls only
+  - Key decisions        # split/sync/protocol tradeoffs only
+  - Risks                # distributed-system risks only
+
+body: |
+  Do:
+  - justify each split with operational need — not domain size alone
+  - assign each service its own data store; no shared mutable DB
+  - choose sync vs async at service boundaries deliberately
+
+  Avoid:
+  - splitting before domain ownership is clear
+  - async where sync is simpler and sufficient
+  - service meshes before scale demands them

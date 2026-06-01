@@ -1,0 +1,26 @@
+name: debug
+description: Reproduce a bug, isolate root cause, and propose a minimal fix with regression risk
+triggers:
+  - debug
+  - bug report
+  - fix bug
+  - reproduce bug
+
+source: schemas/ISSUES.md
+output: ISSUES.md
+
+body: |
+  Work in order: reproduce → isolate root cause → propose minimal fix. Fill the Investigation section in `ISSUES.md` before editing code.
+
+  Do:
+  - reproduce and document steps before forming a theory
+  - name the root cause (with file:line) before proposing a fix
+  - state regression risk and verification steps with the fix
+
+  Avoid:
+  - speculative edits before the cause is identified
+  - refactoring, cleanup, or unrelated changes in the same diff
+
+targets:
+  claude:
+    model: opus

@@ -1,0 +1,18 @@
+---
+name: ai-architecture
+description: 'Apply AI system design (RAG, routing, eval). @stack-ai for SDK; @realtime for transport.'
+
+---
+
+Do:
+- justify long-context or no-RAG when skipping retrieval/chunking
+- set cost/latency targets per routing step
+- define golden-case offline eval and explicit degrade/fallback paths
+
+Avoid:
+- full-corpus prompts when RAG is cheaper and more precise
+- one model for all steps when routing cuts cost
+- prod prompt/model changes without offline eval
+- client/edge inference without a clear latency, privacy, or cost win
+
+Output: Read `schemas/DESIGN.md` for context. Update sections `AI system`, `Data flow`, `Key decisions`, `Risks` in `NNN-DESIGN.md` (create the file if missing).

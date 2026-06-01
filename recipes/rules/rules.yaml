@@ -1,0 +1,24 @@
+00-operating-principles:
+  name: operating-principles
+  description: Global operating principles for cost-efficient AI-assisted web app delivery
+  body: rules/00-operating-principles.md
+  targets:
+    cursor:
+      alwaysApply: true
+
+01-fullstack-typescript:
+  name: fullstack-typescript
+  description: Baseline TypeScript/JavaScript discipline — stack skills layer on matching paths
+  body: rules/01-fullstack-typescript.md
+  targets:
+    cursor:
+      alwaysApply: false
+      globs: '**/*.ts, **/*.tsx, **/*.js, **/*.jsx, **/*.mts, **/*.cts, **/*.mjs, **/*.cjs'
+
+02-documentation:
+  name: documentation
+  description: Documentation as part of implementation — lightweight and selective
+  body: rules/02-documentation.md
+  targets:
+    cursor:
+      alwaysApply: true

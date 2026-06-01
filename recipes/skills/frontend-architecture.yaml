@@ -1,0 +1,23 @@
+name: frontend-architecture
+description: Apply frontend architecture expertise. Use when deciding the client/server boundary and how each route renders and fetches
+
+triggers:
+  - frontend architecture
+  - rendering strategy
+  - client server boundary
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+sections:
+  - System structure   # client modules and route map only
+  - Data flow          # per-route boundary crossings and fetch path only
+  - Key decisions      # rendering and fetch choices only
+
+body: |
+  Default to server components and one fetching pattern per feature.
+
+  Per route: client/server boundary, rendering mode (SSR / SSG / client), data source (RSC fetch vs client query).
+
+  Avoid:
+  - state management libraries for trivial data flows
+  - mixed fetching patterns in the same feature

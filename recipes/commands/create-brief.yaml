@@ -1,0 +1,17 @@
+name: create-brief
+description: Create product brief for new products/greenfield. For existing system changes, use /plan-work
+triggers:
+  - create brief
+  - product brief
+  - new product
+
+source: schemas/BRIEF.md
+output: NNN-BRIEF.md
+
+body: |
+  Capture just enough to start design or planning. 
+  Focus on product intent (what and why), not implementation details.
+
+targets:
+  claude:
+    model: opus

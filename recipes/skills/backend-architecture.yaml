@@ -1,0 +1,24 @@
+name: backend-architecture
+description: Apply backend architecture expertise. Use when deciding how responsibilities and contracts are split across the backend
+
+triggers:
+  - backend architecture
+  - API design
+  - service design
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+sections:
+  - System structure   # server modules, domain ownership
+  - API contracts        # versioning policy with contracts
+  - Data model
+
+body: |
+  Domain ownership over technical layers; match structure to current scale.
+
+  Do:
+  - versioning policy with API contracts
+  - operational cost as a gate before any service or module split
+
+  Avoid:
+  - service splits before domain boundaries are clear (@microservices when decomposing)

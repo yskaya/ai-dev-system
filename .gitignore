@@ -1,0 +1,6 @@
+.cursor/
+.claude/
+.DS_Store
+__pycache__/
+*.pyc
+ai-dev-system-dist.tar.gz

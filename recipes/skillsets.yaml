@@ -1,0 +1,26 @@
+# Skillsets — named bundles of skills. Reference a skillset id in a command's
+# `skills:` list (or layer manually with @set-id) and it expands to its members
+# at build time.
+#
+# Two flavours, distinguished by membership — not by a flag:
+#   - tech-only (every member is stack-*): safe to AUTO-INJECT. May appear in a
+#     command's `skills:` list; the build expands it to its members. stack-*
+#     members also auto-attach via their own `paths:`, but skillsets re-inject
+#     them on purpose so /build-* still loads the expertise when scaffolding a
+#     fresh repo — at that point there are no files yet for path-attach to match.
+#   - mixed (contains a mode skill): MANUAL-ONLY. Layer it as an @-token
+#     (/build-step @set-microservice); NEVER list it in a command's `skills:`,
+#     because that would auto-inject a reasoning mode into an implementation
+#     session. tests/test_recipes.py enforces this.
+set-web:
+  description: React + Next.js frontend stack
+  skills: [stack-react, stack-nextjs]
+set-api:
+  description: Node.js + NestJS API stack
+  skills: [stack-node, stack-nestjs]
+set-service:
+  description: NestJS microservice stack
+  skills: [stack-nestjs]
+set-microservice:
+  description: Microservice build bundle — NestJS stack plus the microservices design mode
+  skills: [stack-nestjs, microservices]
