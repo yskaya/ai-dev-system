@@ -15,3 +15,11 @@ Layer when scope requires it:
 - Monorepo layout → @monorepo
 
 Output: Read `schemas/DESIGN.md` for context. Create or update `NNN-DESIGN.md`.
+
+**When done — print this as your final message:**
+
+### Next recommended step
+1. **Review** `NNN-DESIGN.md` — Verify API contract, auth boundaries, and data flow.
+2. **Run** `/plan-work`.
+
+_Layer manually if scope requires:_ `@ai-architecture` (LLM/RAG/chat in scope), `@realtime` (live updates in scope), `@set-microservice` (service decomposition), `@monorepo` (monorepo layout)

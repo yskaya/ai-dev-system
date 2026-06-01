@@ -1,0 +1,6 @@
+name: cmd-skills-direct
+description: Command with direct skill references (no skillset)
+skills: [skill-plain, skill-scoped]
+
+body: |
+  Direct skills command body.

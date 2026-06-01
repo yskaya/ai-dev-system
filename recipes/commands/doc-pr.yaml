@@ -27,7 +27,13 @@ body: |
   Anything reviewers should know — known gaps, follow-ups, risky bits. Omit if none.
   ```
 
-  Do not list every file. Do not paste the diff. Do not write more than 200 words outside the test plan checklist.
+  Do:
+  - write in product terms; group meaningful changes by area
+  - tie test plan checkboxes to acceptance criteria from `NNN-PLAN.md` when available
+
+  Avoid:
+  - listing every file or pasting the diff
+  - more than 200 words outside the test plan checklist
 
 targets:
   cursor: {}

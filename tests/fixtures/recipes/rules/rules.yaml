@@ -1,0 +1,16 @@
+rule-always:
+  name: rule-always
+  description: Always-on fixture rule
+  body: rules/body-always.md
+  targets:
+    cursor:
+      alwaysApply: true
+
+rule-scoped:
+  name: rule-scoped
+  description: Path-scoped fixture rule
+  body: rules/body-scoped.md
+  targets:
+    cursor:
+      alwaysApply: false
+      globs: "**/*.ts, **/*.tsx"

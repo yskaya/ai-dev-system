@@ -15,3 +15,13 @@ Avoid:
 Auth, input handling, or external integrations → run `/review-security`, then fold results into this review.
 
 Output: Read `schemas/REVIEW.md` for context. Create or update `NNN-REVIEW.md`.
+
+**When done — print this as your final message:**
+
+### Next recommended step
+1. **Review** `NNN-REVIEW.md` — Check decision and P0–P3 findings.
+
+Inspect project state and pick **one**:
+- **diff touches auth, user input, secrets, or third-party/AI integrations** → `/review-security`
+- **P0 or blocking issues remain** → `/debug`
+- **approved or no blockers** → `/doc-pr`

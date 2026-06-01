@@ -22,4 +22,18 @@ Bullet list of meaningful changes, grouped by area. Skip trivial edits.
 Anything reviewers should know — known gaps, follow-ups, risky bits. Omit if none.
 ```
 
-Do not list every file. Do not paste the diff. Do not write more than 200 words outside the test plan checklist.
+Do:
+- write in product terms; group meaningful changes by area
+- tie test plan checkboxes to acceptance criteria from `NNN-PLAN.md` when available
+
+Avoid:
+- listing every file or pasting the diff
+- more than 200 words outside the test plan checklist
+
+**When done — print this as your final message:**
+
+### Next recommended step
+1. Open or update the PR with the drafted description.
+
+Inspect project state:
+- **initiative complete — all plan tasks checked and review approved** → `/create-brief` — Start the next initiative with a new NNN id, or run /plan-work for the next feature

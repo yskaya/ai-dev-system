@@ -1,0 +1,19 @@
+name: cmd-next-rich
+description: Command exercising full handoff block shape
+triggers:
+  - rich handoff
+  - fixture next
+
+source: schemas/SAMPLE.md
+output: NNN-OUT.md
+sections:
+  - Alpha
+  - Beta
+skills: [skill-plain]
+
+body: |
+  Rich handoff command body.
+
+targets:
+  claude:
+    model: sonnet

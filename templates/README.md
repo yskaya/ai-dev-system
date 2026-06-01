@@ -18,4 +18,11 @@ Placeholders:
 | `{body}` | yes | yes | yes | yes |
 | `{output_statement}` | when `source`/`output` | when `source`/`output` | — | — |
 
-When changing output format, update **both** the template and any placeholder assembly in `scripts/build.py`, then run `python3 -m unittest discover -s tests`.
+When changing output format, update **both** the template and any placeholder assembly in `scripts/build.py`, then:
+
+```bash
+python3 tests/generate_expected.py
+python3 -m unittest discover -s tests
+```
+
+See `tests/README.md` for fixture layout.

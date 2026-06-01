@@ -1,0 +1,109 @@
+# Command workflow transitions — consumed by build.py to emit "Next recommended step" blocks.
+# Mirrors GUIDE.md workflows. Every command in recipes/commands/ must have an entry here.
+
+commands:
+  create-brief:
+    review:
+      doc: NNN-BRIEF.md
+      prompt: Confirm MVP scope, non-goals, and success criteria
+    default:
+      command: design-web
+      why: document architecture before build
+    branches:
+      - when: small change to an existing system (skip design)
+        command: plan-work
+
+  design-web:
+    review:
+      doc: NNN-DESIGN.md
+      prompt: Verify API contract, auth boundaries, and data flow
+    default:
+      command: plan-work
+    manual_skills:
+      ai-architecture: LLM/RAG/chat in scope
+      realtime: live updates in scope
+      set-microservice: service decomposition
+      monorepo: monorepo layout
+
+  plan-work:
+    review:
+      doc: NNN-PLAN.md
+      prompt: Confirm tasks are one build-step each with clear acceptance criteria
+    default:
+      command: build-step
+      skills: ["@set-web", "@set-api", "@set-service"]
+      note: Stack skills are NOT auto-attached — pick one for the task area
+
+  plan-refactor:
+    review:
+      doc: NNN-REFACTOR.md
+      prompt: Confirm phases are test-gated with no feature or bug-fix mix-in
+    default:
+      command: build-step
+      skills: ["@set-web", "@set-api", "@set-service"]
+      note: Stack skills are NOT auto-attached — pick one for the task area
+
+  build-step:
+    branches:
+      - when: unchecked tasks remain in NNN-PLAN.md or NNN-REFACTOR.md
+        command: build-step
+        skills: ["@set-web", "@set-api", "@set-service"]
+        note: Stack skills are NOT auto-attached — pick one for the task area
+      - when: all plan or refactor tasks checked
+        command: review-code
+    also:
+      - when: diff touches auth, user input, secrets, or third-party/AI integrations
+        command: review-security
+
+  debug:
+    review:
+      doc: ISSUES.md
+      prompt: Confirm root cause, fix, and verification steps are documented
+    branches:
+      - when: fix applied and a unit test is practical
+        command: write-unit-tests
+      - when: fix applied and more plan tasks remain
+        command: build-step
+        skills: ["@set-web", "@set-api", "@set-service"]
+      - when: investigation complete but fix not yet applied
+        note: Apply the minimal fix, then re-run /debug or proceed to /write-unit-tests
+
+  review-code:
+    review:
+      doc: NNN-REVIEW.md
+      prompt: Check decision and P0–P3 findings
+    branches:
+      - when: diff touches auth, user input, secrets, or third-party/AI integrations
+        command: review-security
+      - when: P0 or blocking issues remain
+        command: debug
+      - when: approved or no blockers
+        command: doc-pr
+
+  review-security:
+    review:
+      doc: NNN-REVIEW.md
+      section: Security
+      prompt: Check security findings and P0–P3 rankings
+    branches:
+      - when: P0 security findings need tracking or investigation
+        command: debug
+        note: Findings may also be appended to NNN-ISSUES.md or ISSUES.md
+      - when: no P0 blockers
+        command: doc-pr
+
+  write-unit-tests:
+    branches:
+      - when: unchecked tasks remain in NNN-PLAN.md
+        command: build-step
+        skills: ["@set-web", "@set-api", "@set-service"]
+      - when: all plan tasks done or no plan in scope
+        command: doc-pr
+
+  doc-pr:
+    default:
+      note: Open or update the PR with the drafted description
+    branches:
+      - when: initiative complete — all plan tasks checked and review approved
+        command: create-brief
+        note: Start the next initiative with a new NNN id, or run /plan-work for the next feature

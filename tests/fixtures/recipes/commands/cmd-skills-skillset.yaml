@@ -1,0 +1,10 @@
+name: cmd-skills-skillset
+description: Command with skillset expansion at build time
+skills: [bundle-a]
+
+body: |
+  Skillset command body.
+
+targets:
+  claude:
+    model: sonnet

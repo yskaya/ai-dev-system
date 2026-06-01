@@ -22,3 +22,12 @@ Avoid:
 - skipping third-party and AI integration surfaces
 
 Output: Read `schemas/REVIEW.md` for context. Update sections `Security` in `NNN-REVIEW.md` (create the file if missing).
+
+**When done — print this as your final message:**
+
+### Next recommended step
+1. **Review** `NNN-REVIEW.md` (Security section) — Check security findings and P0–P3 rankings.
+
+Inspect project state and pick **one**:
+- **P0 security findings need tracking or investigation** → `/debug` — Findings may also be appended to NNN-ISSUES.md or ISSUES.md
+- **no P0 blockers** → `/doc-pr`

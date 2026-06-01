@@ -1,0 +1,3 @@
+bundle-a:
+  description: Fixture skillset with two members
+  skills: [skill-plain, skill-scoped]

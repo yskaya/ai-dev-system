@@ -1,0 +1,13 @@
+name: skill-output
+description: Skill with schema, output file, and sections
+triggers:
+  - output skill
+
+source: schemas/SAMPLE.md
+output: NNN-OUT.md
+sections:
+  - Alpha
+  - Beta   # inline comment stripped at build
+
+body: |
+  Output skill body.

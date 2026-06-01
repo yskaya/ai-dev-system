@@ -1,0 +1,6 @@
+name: cmd-next-branches
+description: Command with branch-only next step (no default command)
+skills: [skill-scoped]
+
+body: |
+  Branch-only handoff body.

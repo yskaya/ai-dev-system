@@ -1,0 +1,9 @@
+---
+description: 'Path-scoped fixture rule'
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: false
+---
+
+Path-scoped rule body.

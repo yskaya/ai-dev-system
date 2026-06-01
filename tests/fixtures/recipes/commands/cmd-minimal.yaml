@@ -1,0 +1,11 @@
+name: cmd-minimal
+description: Minimal command — schema output only, simple next step
+source: schemas/SAMPLE.md
+output: NNN-OUT.md
+
+body: |
+  Minimal command body.
+
+targets:
+  claude:
+    model: opus

@@ -252,6 +252,14 @@ For defects found in review, `/review-security` or `/review-code` may append to 
 - Run security review when the diff touches auth, user input, secrets, or third-party/AI integrations.
 - Keep `NNN-*` files in version control — they are context for future sessions and reviewers.
 
+### Next recommended step (workflow handoff)
+
+When a slash command finishes, the agent prints a **Next recommended step** block as its final message. Each built command includes a compiled **When done** section that tells the agent what to recommend — review which artifact, run which command next, and which skills to layer manually.
+
+The agent inspects project state for branching decisions (e.g. unchecked plan tasks → loop `/build-step`; all done → `/review-code`). It distinguishes **auto-attached** skills (listed in the command's `Skills:` line) from **manual** `@` skills you must add yourself.
+
+Maintainers: workflow transitions live in `recipes/workflows.yaml` and are compiled into commands at build time.
+
 ---
 
 ## Skills reference
@@ -306,4 +314,6 @@ Fork-friendly: the recipe layer is plain YAML and Markdown; no runtime dependenc
 ## Further reading
 
 - [README.md](README.md) — build, install, field reference, repo layout, tests
+- [examples/minimal/](examples/minimal/) — sample `001-BRIEF.md` through `001-REVIEW.md` walkthrough
+- [CONTRIBUTING.md](CONTRIBUTING.md) — add skills, commands, run tests, cut releases
 - [templates/README.md](templates/README.md) — emitted file shapes and placeholders

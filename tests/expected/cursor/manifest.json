@@ -1,0 +1,16 @@
+{
+  "target": "cursor",
+  "files": [
+    "commands/cmd-minimal.md",
+    "commands/cmd-next-branches.md",
+    "commands/cmd-next-rich.md",
+    "commands/cmd-skills-direct.md",
+    "commands/cmd-skills-skillset.md",
+    "rules/rule-always.mdc",
+    "rules/rule-scoped.mdc",
+    "schemas/SAMPLE.md",
+    "skills/skill-output/SKILL.md",
+    "skills/skill-plain/SKILL.md",
+    "skills/skill-scoped/SKILL.md"
+  ]
+}
