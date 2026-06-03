@@ -6,11 +6,10 @@ model: opus
 
 Minimal command body.
 
-Output: Read `schemas/SAMPLE.md` for context. Create or update `NNN-OUT.md`.
+**Artifact (required)**
+- Read `schemas/SAMPLE.md` before writing.
+- Write `docs/ai/NNN-OUT.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Use schema headings exactly; substitute real work id (`001`) when known.
 
-**When done — print this as your final message:**
-
-### Next recommended step
-1. **Run** `/cmd-skills-direct` to continue the fixture workflow.
-
-_Skills for `/cmd-skills-direct` (auto-attached):_ `@skill-plain`, `@skill-scoped`
+### Next Step
+Review `NNN-OUT.md` and run `/cmd-skills-direct`

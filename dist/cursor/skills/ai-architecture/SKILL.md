@@ -15,4 +15,8 @@ Avoid:
 - prod prompt/model changes without offline eval
 - client/edge inference without a clear latency, privacy, or cost win
 
-Output: Read `schemas/DESIGN.md` for context. Update sections `AI system`, `Data flow`, `Key decisions`, `Risks` in `NNN-DESIGN.md` (create the file if missing).
+**Artifact (required)**
+- Read `schemas/DESIGN.md` before writing.
+- Update sections `AI system`, `Data flow`, `Key decisions`, `Risks` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Leave other sections unchanged.
+- Use schema headings exactly; substitute real work id (`001`) when known.

@@ -1,0 +1,2 @@
+# Project paths — consumed by scripts/build.py when compiling commands, skills, and rules.
+artifact_dir: docs/ai

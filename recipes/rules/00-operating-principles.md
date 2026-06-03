@@ -26,16 +26,18 @@ Design defaults (architecture or stack choices only):
 - monoliths, simple modules, and synchronous flows unless operational pressure requires otherwise
 - low operational and AI cost
 
+Layer stack (manual @ for task area):
+- Area: `@set-web` · `@set-api` · `@set-service` (pick one)
+- Add: `@microservices` (service boundaries) · `@stack-ai` (LLM SDK)
+- Shortcut: `@set-microservice` = `@set-service` + `@microservices`
+
 Recipes/commands:
 - `@<skill-name>` or `@<command-name>` in a body: load and apply in order before continuing; if unavailable, note and proceed
-- command outputs (NNN-DESIGN.md, NNN-PLAN.md, etc.): follow the command schema — do not invent structure
+- command artifacts: write `{artifact_dir}/NNN-*.md` on disk — not chat-only; follow the command schema — do not invent structure
 - review commands: no Approve / go while P0 or blocking issues remain unresolved
 - no relevant context attached: ask before proceeding
 
 Workflow handoff:
-- when a slash command session completes, your **last message** must include a `### Next recommended step` block
-- follow the compiled **When done** section from the active command — do not invent a different workflow
+- when a slash command session completes, your **last message** must include a `### Next Step` block
+- follow the compiled **Next Step** block from the active command — do not invent a different workflow
 - substitute the actual work id (`001`, not `NNN`) when known
-- for branches, inspect project files (plan checkboxes, review P0s, diff scope) before recommending
-- distinguish auto-attached skills (command `Skills:` line) from manual `@` skills
-- keep the block concise — 2–4 lines plus optional skill notes

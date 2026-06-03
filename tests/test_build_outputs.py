@@ -19,14 +19,13 @@ from helpers import read_text, split_frontmatter
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _command_has_handoff_after_output(md: str) -> bool:
+def _command_has_handoff_after_artifact(md: str) -> bool:
     text = md.rstrip()
-    if "Output: " not in text:
-        return "### Next recommended step" in text
-    before, after = text.rsplit("Output: ", 1)
-    output_line = "Output: " + after.split("\n", 1)[0]
-    rest = after.split("\n", 1)[1] if "\n" in after else ""
-    return output_line.startswith("Output: ") and "### Next recommended step" in rest
+    if "**Artifact (required)**" not in text:
+        return "### Next Step" in text
+    artifact_idx = text.index("**Artifact (required)**")
+    next_idx = text.index("### Next Step")
+    return artifact_idx < next_idx
 
 
 class TestProductionBuild(unittest.TestCase):
@@ -44,26 +43,57 @@ class TestProductionBuild(unittest.TestCase):
     def test_all_commands_include_handoff_block(self) -> None:
         for path in sorted((ROOT / "dist/cursor/commands").glob("*.md")):
             cmd = read_text(path)
-            self.assertIn("When done", cmd, f"{path.name}: missing handoff preamble")
-            self.assertIn("### Next recommended step", cmd, f"{path.name}: missing handoff heading")
+            self.assertIn("### Next Step", cmd, f"{path.name}: missing handoff heading")
 
-    def test_build_step_handoff_includes_branch_and_manual_skills(self) -> None:
+    def test_build_step_handoff_includes_next(self) -> None:
         cmd = read_text(ROOT / "dist/cursor/commands/build-step.md")
-        self.assertIn("unchecked tasks remain", cmd.lower())
-        self.assertIn("all plan or refactor tasks checked", cmd.lower())
-        self.assertIn("NOT auto-attached", cmd)
+        self.assertIn("Run `/build-step`", cmd)
 
-    def test_create_brief_handoff_expands_next_command_skills(self) -> None:
+    def test_custom_artifact_dir(self) -> None:
+        import subprocess
+
+        subprocess.run(
+            ["python3", "scripts/build.py", "cursor", "create-brief", "--artifact-dir", "docs/custom"],
+            cwd=str(ROOT),
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
         cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
-        self.assertIn("auto-attached", cmd)
-        self.assertIn("@architecture-docs", cmd)
-        self.assertIn("@ai-architecture", cmd)
+        self.assertIn("Write `docs/custom/NNN-BRIEF.md`", cmd)
+        self.assertIn("Create `docs/custom/` if missing", cmd)
+        self.assertIn("Review `docs/custom/NNN-BRIEF.md` and run `/design-web`", cmd)
+        subprocess.run(
+            ["python3", "scripts/build.py", "all"],
+            cwd=str(ROOT),
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+        cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
+        self.assertIn("Review `docs/ai/NNN-BRIEF.md` and run `/design-web`", cmd)
+        self.assertNotIn("Alternatively:", cmd)
+
+    def test_commands_with_artifact_write_docs_ai(self) -> None:
+        cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
+        self.assertIn("**Artifact (required)**", cmd)
+        self.assertIn("not chat-only", cmd)
+        self.assertTrue(_command_has_handoff_after_artifact(cmd))
 
     def test_review_security_output_targets_section(self) -> None:
         cmd = read_text(ROOT / "dist/cursor/commands/review-security.md")
         self.assertIn("schemas/REVIEW.md", cmd)
-        self.assertTrue(_command_has_handoff_after_output(cmd))
-        self.assertIn("`Security`", cmd.split("Output:")[-1])
+        self.assertTrue(_command_has_handoff_after_artifact(cmd))
+        self.assertIn("`Security`", cmd)
+        self.assertIn("docs/ai/NNN-REVIEW.md", cmd)
+
+    def test_operating_principles_include_layer_stack(self) -> None:
+        rules = read_text(ROOT / "dist/cursor/rules/00-operating-principles.mdc")
+        self.assertIn("Layer stack", rules)
+        self.assertIn("@set-web", rules)
 
     def test_schemas_are_copied_to_both_targets(self) -> None:
         schemas = list((ROOT / "recipes/schemas").glob("*.md"))

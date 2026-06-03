@@ -185,12 +185,12 @@ You define platform-neutral recipes; the build produces two parallel trees.
 
 | You define (recipes/) | You get (dist/) |
 |---|---|
-| `skills/<id>.yaml` — `name`, `description`, `body`, optional `paths`, `source`/`output`/`sections` | `skills/<id>/SKILL.md` with YAML frontmatter + body + optional `Output:` line |
-| `commands/<id>.yaml` — `name`, `description`, `body`, optional `skills`, `source`/`output`/`sections`, `targets` | `commands/<id>.md` — Cursor: description only; Claude: + `triggers`, optional `model`; + compiled **Next recommended step** handoff block |
+| `skills/<id>.yaml` — `name`, `description`, `body`, optional `paths`, `source`/`output`/`sections` | `skills/<id>/SKILL.md` with YAML frontmatter + body + optional **Artifact (required)** block |
+| `commands/<id>.yaml` — `name`, `description`, `body`, optional `skills`, `source`/`output`/`sections`, `targets` | `commands/<id>.md` — Cursor: description only; Claude: + `triggers`, optional `model`; + **Artifact (required)** + compact **Next recommended step** handoff |
 | `rules/rules.yaml` + `rules/*.md` bodies | Cursor: `rules/<id>.mdc` (`alwaysApply`, optional `globs`); Claude: `rules/<id>.md` (`paths` when scoped) |
 | `schemas/*.md` | Copied verbatim to `schemas/` |
 | `skillsets.yaml` — named skill bundles | Expanded inline in command `Skills: @…` lines (tech-only sets only) |
-| `workflows.yaml` — command transition graph | Compiled into each command as a **When done** / **Next recommended step** block |
+| `workflows.yaml` — command transition graph | Compiled into each command as **Next recommended step** (short handoff) |
 | `outputs.yaml` — schema index | Drives which schemas are copied to `dist/` |
 
 **Field quick reference**
@@ -208,7 +208,7 @@ You define platform-neutral recipes; the build produces two parallel trees.
 | `skills` | commands | YAML list of skills/skillsets (expanded at build) |
 | `targets` | commands, rules | Per-platform options — see below |
 
-**Claude models:** use `targets.claude.model: opus` or `sonnet` (canonical short ids; build normalizes legacy `claude-opus` / `routing` if present).
+**Claude models:** use `targets.claude.model: opus` or `sonnet`.
 
 **`targets` on commands:** required on every command. Sets Claude frontmatter (`model`). All commands emit to **both** `dist/cursor/` and `dist/claude/`; empty `cursor: {}` marks Cursor-oriented commands (e.g. `/build-step`).
 
@@ -260,7 +260,7 @@ python3 -m unittest discover -s tests
 
 ## Document convention (`NNN`)
 
-`NNN` is a zero-padded work id (e.g. `001`, `002`). Default path prefix: `docs/ai/`. Mapping of schemas → commands → filenames is in [GUIDE.md — Work id](GUIDE.md#work-id-nnn) and [GUIDE.md — Commands reference](GUIDE.md#commands-reference).
+`NNN` is a zero-padded work id (e.g. `001`, `002`). Default path prefix: `docs/ai/`. Schema → command → filename reference is in [GUIDE.md — Work id](GUIDE.md#work-id-nnn) and [GUIDE.md — Commands reference](GUIDE.md#commands-reference).
 
 ## Layout
 

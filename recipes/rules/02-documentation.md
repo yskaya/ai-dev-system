@@ -1,3 +1,5 @@
+Slash-command artifacts under `{artifact_dir}/` (e.g. `001-BRIEF.md`) are required implementation output — write them even when other documentation would stay lightweight.
+
 Documentation is part of implementation — keep it lightweight and selective.
 
 Update or create docs only when changes affect:

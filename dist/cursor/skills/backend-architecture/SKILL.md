@@ -13,4 +13,8 @@ Do:
 Avoid:
 - service splits before domain boundaries are clear (@microservices when decomposing)
 
-Output: Read `schemas/DESIGN.md` for context. Update sections `System structure`, `API contracts`, `Data model` in `NNN-DESIGN.md` (create the file if missing).
+**Artifact (required)**
+- Read `schemas/DESIGN.md` before writing.
+- Update sections `System structure`, `API contracts`, `Data model` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Leave other sections unchanged.
+- Use schema headings exactly; substitute real work id (`001`) when known.

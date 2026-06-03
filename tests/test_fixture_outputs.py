@@ -113,9 +113,10 @@ class TestFixtureSkillSemantics(FixtureBuildTestCase):
     def test_skill_output_statement_with_sections(self) -> None:
         path = self.dist_dir / "cursor/skills/skill-output/SKILL.md"
         text = read_text(path)
-        self.assertIn("Output: Read `schemas/SAMPLE.md`", text)
+        self.assertIn("**Artifact (required)**", text)
+        self.assertIn("schemas/SAMPLE.md", text)
         self.assertIn("`Alpha`, `Beta`", text)
-        self.assertTrue(text.rstrip().endswith(")."))
+        self.assertIn("docs/ai/NNN-OUT.md", text)
 
 
 class TestFixtureCommandSemantics(FixtureBuildTestCase):
@@ -135,30 +136,27 @@ class TestFixtureCommandSemantics(FixtureBuildTestCase):
         self.assertEqual(fm.get("model"), "sonnet")
         self.assertIn("triggers", fm)
 
-    def test_output_line_precedes_next_handoff(self) -> None:
+    def test_artifact_block_precedes_next_handoff(self) -> None:
         path = self.dist_dir / "cursor/commands/cmd-next-rich.md"
         text = read_text(path)
-        out_idx = text.index("Output:")
-        next_idx = text.index("### Next recommended step")
-        self.assertLess(out_idx, next_idx)
+        artifact_idx = text.index("**Artifact (required)**")
+        next_idx = text.index("### Next Step")
+        self.assertLess(artifact_idx, next_idx)
 
-    def test_next_handoff_covers_review_default_branches_also_manual(self) -> None:
+    def test_next_handoff_covers_review_and_next(self) -> None:
         path = self.dist_dir / "cursor/commands/cmd-next-rich.md"
         text = read_text(path)
-        self.assertIn("**Review** `NNN-OUT.md` (Alpha section)", text)
-        self.assertIn("**Run** `/cmd-minimal`", text)
-        self.assertIn("_Alternatively:_", text)
-        self.assertIn("_Also:_ if optional follow-up needed", text)
-        self.assertIn("_Layer manually if scope requires:_", text)
-        self.assertIn("@skill-output`", text)
+        self.assertIn("Review `NNN-OUT.md` (Alpha) and run `/cmd-minimal`", text)
+        self.assertNotIn("Alternatively:", text)
+        self.assertNotIn("_Also:_", text)
+        self.assertNotIn("_Layer manually:_", text)
 
-    def test_branch_only_next_with_skills_suffix(self) -> None:
+    def test_next_handoff_next_only(self) -> None:
         path = self.dist_dir / "cursor/commands/cmd-next-branches.md"
         text = read_text(path)
-        self.assertIn("Inspect project state and pick **one**:", text)
-        self.assertIn("with @skill-scoped, or @skill-plain", text)
-        self.assertIn("NOT auto-attached", text)
-        self.assertNotIn("**Run** `/cmd-next-branches`", text.split("### Next recommended step")[0])
+        self.assertIn("Run `/cmd-minimal`", text)
+        self.assertNotIn("Pick one:", text)
+        self.assertNotIn("Alternatively:", text)
 
 
 class TestFixtureFilteredBuild(unittest.TestCase):

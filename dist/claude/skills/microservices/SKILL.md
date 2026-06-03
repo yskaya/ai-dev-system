@@ -15,4 +15,8 @@ Avoid:
 - async where sync is simpler and sufficient
 - service meshes before scale demands them
 
-Output: Read `schemas/DESIGN.md` for context. Update sections `System structure`, `Data flow`, `Key decisions`, `Risks` in `NNN-DESIGN.md` (create the file if missing).
+**Artifact (required)**
+- Read `schemas/DESIGN.md` before writing.
+- Update sections `System structure`, `Data flow`, `Key decisions`, `Risks` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Leave other sections unchanged.
+- Use schema headings exactly; substitute real work id (`001`) when known.

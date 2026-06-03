@@ -36,8 +36,8 @@ python3 -m unittest discover -s tests
 - `cmd-minimal` — output statement, simple default next step, Claude `model: opus`
 - `cmd-skills-direct` — direct `skills:` list
 - `cmd-skills-skillset` — skillset expands to members (not bundle id)
-- `cmd-next-rich` — review, default with branch skills, branches, also, manual_skills
-- `cmd-next-branches` — branch-only handoff with skill suffix and note
+- `cmd-next-rich` — review with optional section + next
+- `cmd-next-branches` — next-only handoff
 
 ## Update golden files
 

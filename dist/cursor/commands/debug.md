@@ -13,14 +13,10 @@ Avoid:
 - speculative edits before the cause is identified
 - refactoring, cleanup, or unrelated changes in the same diff
 
-Output: Read `schemas/ISSUES.md` for context. Create or update `ISSUES.md`.
+**Artifact (required)**
+- Read `schemas/ISSUES.md` before writing.
+- Write `docs/ai/ISSUES.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Use schema headings exactly; substitute real work id (`001`) when known.
 
-**When done — print this as your final message:**
-
-### Next recommended step
-1. **Review** `ISSUES.md` — Confirm root cause, fix, and verification steps are documented.
-
-Inspect project state and pick **one**:
-- **fix applied and a unit test is practical** → `/write-unit-tests`
-- **fix applied and more plan tasks remain** → `/build-step` with @set-web, @set-api, or @set-service
-- **investigation complete but fix not yet applied** — Apply the minimal fix, then re-run /debug or proceed to /write-unit-tests
+### Next Step
+Review `ISSUES.md` and run `/build-step`

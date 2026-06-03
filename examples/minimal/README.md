@@ -23,4 +23,4 @@ Reference walkthrough for **ai-dev-system** artifact shapes. These files show wh
 
 After `/plan-work`, loop `/build-step @set-api` until all plan checkboxes pass, then `/review-code` and `/doc-pr`.
 
-See [GUIDE — Workflows](../../GUIDE.md#workflows) for greenfield, feature, refactor, and bug-fix paths.
+See [GUIDE — Workflows](../../GUIDE.md#workflows) for greenfield, feature, and bug-fix paths.

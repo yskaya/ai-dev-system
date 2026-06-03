@@ -1,5 +1,5 @@
 name: plan-work
-description: Create NNN-PLAN.md — milestone tasks with files and acceptance criteria (features/MVP; use /plan-refactor for structural debt)
+description: Create NNN-PLAN.md — milestone tasks with files and acceptance criteria (features/MVP)
 triggers:
   - plan work
   - implementation plan

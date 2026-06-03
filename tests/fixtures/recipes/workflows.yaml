@@ -1,45 +1,17 @@
 commands:
   cmd-minimal:
-    default:
-      command: cmd-skills-direct
-      why: continue the fixture workflow
+    review: verify sample output
+    next: cmd-skills-direct
 
   cmd-skills-direct:
-    default:
-      note: Direct-skills command complete
 
   cmd-skills-skillset:
-    default:
-      command: cmd-minimal
+    next: cmd-minimal
 
   cmd-next-rich:
-    review:
-      doc: NNN-OUT.md
-      section: Alpha
-      prompt: Verify alpha section content
-    default:
-      command: cmd-minimal
-      why: proceed after rich handoff
-      skills: ["@skill-scoped", "@skill-plain"]
-      note: Branch skills are illustrative only
-    branches:
-      - when: condition A applies
-        command: cmd-skills-direct
-        skills: ["@skill-plain"]
-        note: use plain skill here
-      - when: condition B applies
-        note: note-only branch without command
-    also:
-      - when: optional follow-up needed
-        command: cmd-skills-skillset
-    manual_skills:
-      skill-output: layer when output sections matter
+    review: Verify alpha section content
+    review_section: Alpha
+    next: cmd-minimal
 
   cmd-next-branches:
-    branches:
-      - when: more work remains
-        command: cmd-next-branches
-        skills: ["@skill-scoped", "@skill-plain"]
-        note: Skills are NOT auto-attached
-      - when: all branch tasks done
-        command: cmd-minimal
+    next: cmd-minimal

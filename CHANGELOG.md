@@ -8,11 +8,11 @@ First public release — portable prompt system for Cursor and Claude Code.
 
 ### Added
 
-- **10 slash commands:** `create-brief`, `design-web`, `plan-work`, `plan-refactor`, `build-step`, `debug`, `review-code`, `review-security`, `write-unit-tests`, `doc-pr`
+- **9 slash commands:** `create-brief`, `design-web`, `plan-work`, `build-step`, `debug`, `review-code`, `review-security`, `write-unit-tests`, `doc-pr`
 - **13 skills:** stack (`stack-react`, `stack-nextjs`, `stack-node`, `stack-nestjs`, `stack-ai`) and mode (`frontend-architecture`, `backend-architecture`, `architecture-docs`, `auth`, `ai-architecture`, `realtime`, `microservices`, `monorepo`)
 - **4 skillsets:** `set-web`, `set-api`, `set-service`, `set-microservice` (mixed set manual-only)
 - **3 always-on / scoped rules:** operating principles, fullstack TypeScript, documentation discipline
-- **7 output schemas:** `BRIEF`, `DESIGN`, `PLAN`, `REFACTOR`, `REVIEW`, `ISSUES`, `SETUP`
+- **6 output schemas:** `BRIEF`, `DESIGN`, `PLAN`, `REVIEW`, `ISSUES`, `SETUP`
 - **Workflow graph** (`recipes/workflows.yaml`) compiled into **Next recommended step** handoff blocks on every command
 - **Dual-target build:** `recipes/` → `dist/cursor/` and `dist/claude/` via `scripts/build.py`
 - **Remote install:** `curl | bash` from GitHub releases (`scripts/install-remote.sh`)

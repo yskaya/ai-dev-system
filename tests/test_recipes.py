@@ -105,66 +105,16 @@ class TestRecipes(unittest.TestCase):
         for cmd_id in sorted(command_ids):
             self.assertIn(cmd_id, wf_commands, f"workflows.yaml: missing entry for {cmd_id!r}")
 
-    def test_workflow_branch_commands_exist(self) -> None:
+    def test_workflow_next_commands_exist(self) -> None:
         workflows = yaml.safe_load(_read_text(RECIPES / "workflows.yaml")) or {}
         wf_commands = workflows.get("commands") or {}
         command_ids = {p.stem for p in (RECIPES / "commands").glob("*.yaml")}
-        skill_ids = {p.stem for p in (RECIPES / "skills").glob("*.yaml")}
-        skillsets = yaml.safe_load(_read_text(RECIPES / "skillsets.yaml")) or {}
-        valid_skill_refs = skill_ids | set(skillsets.keys())
 
         for cmd_id, entry in wf_commands.items():
             entry = entry or {}
-            for key in ("branches", "also"):
-                for branch in entry.get(key) or []:
-                    branch = branch or {}
-                    ref = branch.get("command")
-                    if ref:
-                        self.assertIn(ref, command_ids, f"{cmd_id}.{key}: unknown command {ref!r}")
-            default = entry.get("default") or {}
-            ref = default.get("command")
+            ref = entry.get("next")
             if ref:
-                self.assertIn(ref, command_ids, f"{cmd_id}.default: unknown command {ref!r}")
-            manual = entry.get("manual_skills") or {}
-            for skill_ref in manual:
-                self.assertIn(
-                    skill_ref,
-                    valid_skill_refs,
-                    f"{cmd_id}.manual_skills: unknown skill/skillset {skill_ref!r}",
-                )
-
-    def test_workflow_manual_skills_not_in_command_skills(self) -> None:
-        workflows = yaml.safe_load(_read_text(RECIPES / "workflows.yaml")) or {}
-        wf_commands = workflows.get("commands") or {}
-        skillsets = yaml.safe_load(_read_text(RECIPES / "skillsets.yaml")) or {}
-
-        for path in sorted((RECIPES / "commands").glob("*.yaml")):
-            cmd_id = path.stem
-            cmd = yaml.safe_load(_read_text(path)) or {}
-            wf = wf_commands.get(cmd_id) or {}
-            manual = wf.get("manual_skills") or {}
-            if not manual:
-                continue
-            raw_skills = cmd.get("skills") or []
-            expanded: set[str] = set()
-            for item in raw_skills:
-                if item in skillsets:
-                    for m in (skillsets[item] or {}).get("skills") or []:
-                        if isinstance(m, str):
-                            expanded.add(m)
-                elif isinstance(item, str):
-                    expanded.add(item)
-            for skill_ref in manual:
-                self.assertNotIn(
-                    skill_ref,
-                    raw_skills,
-                    f"{cmd_id}: manual_skill {skill_ref!r} must not duplicate command skills: list",
-                )
-                self.assertNotIn(
-                    skill_ref,
-                    expanded,
-                    f"{cmd_id}: manual_skill {skill_ref!r} must not duplicate expanded command skills",
-                )
+                self.assertIn(ref, command_ids, f"{cmd_id}.next: unknown command {ref!r}")
 
 
 if __name__ == "__main__":

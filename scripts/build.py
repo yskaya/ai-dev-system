@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -67,44 +68,94 @@ def _triggers_scalar(triggers: Optional[list[str]]) -> str:
     return f"triggers: {_single_quote_yaml(inner)}"
 
 
-def _normalize_claude_model(raw: Any) -> Optional[str]:
-    """Map recipe model/routing values to canonical opus | sonnet."""
-    if not isinstance(raw, str) or not raw.strip():
-        return None
-    val = raw.strip().lower()
-    if val in _VALID_MODELS:
-        return val
-    if "sonnet" in val:
-        return "sonnet"
-    if "opus" in val:
-        return "opus"
-    return None
-
-
 def _claude_model_from_targets(cmd: dict[str, Any]) -> Optional[str]:
     t = (cmd.get("targets") or {}).get("claude") or {}
-    model = _normalize_claude_model(t.get("model"))
-    if model:
-        return model
-    return _normalize_claude_model(t.get("routing"))
+    model = t.get("model")
+    if not isinstance(model, str) or not model.strip():
+        return None
+    val = model.strip().lower()
+    return val if val in _VALID_MODELS else None
 
 
-def _schema_ref(path: str) -> str:
-    return path.strip()
+DEFAULT_ARTIFACT_DIR = "docs/ai"
 
 
-def _output_statement(*, schema: Optional[str], output: Optional[str], sections: Optional[list[str]]) -> str:
-    parts: list[str] = []
-    if schema:
-        parts.append(f"Read `{_schema_ref(schema)}` for context.")
-    if output and sections:
-        secs = ", ".join([f"`{s}`" for s in sections])
-        parts.append(f"Update sections {secs} in `{output}` (create the file if missing).")
-    elif output:
-        parts.append(f"Create or update `{output}`.")
-    if not parts:
+@dataclass(frozen=True)
+class ProjectConfig:
+    artifact_dir: str = DEFAULT_ARTIFACT_DIR
+
+
+def _normalize_artifact_dir(raw: Any) -> str:
+    if not isinstance(raw, str) or not raw.strip():
+        return DEFAULT_ARTIFACT_DIR
+    return raw.strip().strip("/")
+
+
+def _load_project_config(
+    recipes_dir: Path,
+    *,
+    override: Optional[str] = None,
+) -> ProjectConfig:
+    if override is not None:
+        return ProjectConfig(artifact_dir=_normalize_artifact_dir(override))
+    env = os.environ.get("AI_DEV_ARTIFACT_DIR")
+    if env:
+        return ProjectConfig(artifact_dir=_normalize_artifact_dir(env))
+    project = _read_yaml(recipes_dir / "project.yaml") or {}
+    return ProjectConfig(artifact_dir=_normalize_artifact_dir(project.get("artifact_dir")))
+
+
+def _project_values(artifact_dir: str) -> dict[str, str]:
+    return {"artifact_dir": artifact_dir}
+
+
+def _apply_project(text: str, artifact_dir: str) -> str:
+    return _apply_template(text, _project_values(artifact_dir))
+
+
+def _artifact_path(output: str, *, artifact_dir: str) -> str:
+    out = output.strip()
+    if "/" in out:
+        return out
+    return f"{artifact_dir}/{out}"
+
+
+def _artifact_template_and_values(
+    *,
+    schema: Optional[str],
+    output: Optional[str],
+    sections: Optional[list[str]],
+    artifact_dir: str,
+) -> tuple[Optional[str], dict[str, str]]:
+    if not schema and not output:
+        return None, {}
+    vals: dict[str, str] = {
+        "source": schema.strip() if schema else "",
+        "output_path": _artifact_path(output, artifact_dir=artifact_dir) if output else "",
+        "artifact_dir": artifact_dir,
+        "sections": ", ".join([f"`{s}`" for s in sections]) if sections else "",
+    }
+    if sections and output:
+        return "artifact-edit", vals
+    if output:
+        return "artifact-write", vals
+    return "artifact-read", vals
+
+
+def _render_artifact(
+    *,
+    schema: Optional[str],
+    output: Optional[str],
+    sections: Optional[list[str]],
+    artifact_dir: str,
+    templates_dir: Path = TEMPLATES_DIR,
+) -> str:
+    template_name, vals = _artifact_template_and_values(
+        schema=schema, output=output, sections=sections, artifact_dir=artifact_dir
+    )
+    if not template_name:
         return ""
-    return "Output: " + " ".join(parts)
+    return _render_partial(template_name, vals, templates_dir=templates_dir)
 
 
 def _parse_sections(raw: Any) -> Optional[list[str]]:
@@ -120,13 +171,30 @@ def _load_template(target: str, kind: str, *, templates_dir: Path = TEMPLATES_DI
     return _read_text(path)
 
 
-def _apply_template(tmpl: str, values: dict[str, str]) -> str:
+def _load_shared_template(name: str, *, templates_dir: Path = TEMPLATES_DIR) -> str:
+    path = templates_dir / "_shared" / f"{name}.tmpl"
+    if not path.is_file():
+        raise SystemExit(f"missing shared template: {path}")
+    return _read_text(path)
+
+
+def _render_partial(name: str, values: dict[str, str], *, templates_dir: Path = TEMPLATES_DIR) -> str:
+    return _apply_template(
+        _load_shared_template(name, templates_dir=templates_dir),
+        values,
+        drop_empty_lines=True,
+    )
+
+
+def _apply_template(tmpl: str, values: dict[str, str], *, drop_empty_lines: bool = False) -> str:
     out = tmpl
     for key, val in values.items():
         out = out.replace("{" + key + "}", val)
     lines: list[str] = []
     for line in out.splitlines():
         if re.fullmatch(r"\{[a-z_]+\}", line.strip()):
+            continue
+        if drop_empty_lines and not line.strip():
             continue
         lines.append(line)
     result = "\n".join(lines)
@@ -244,155 +312,51 @@ def _skills_block(skills: list[str]) -> str:
     return "Skills: " + " ".join([f"@{s}" for s in skills])
 
 
-def _format_skill_list(skills: list[str]) -> str:
-    if not skills:
-        return ""
-    return ", ".join([f"`@{s}`" for s in skills])
-
-
-def _attached_skills_for_command(cmd: dict[str, Any], skillsets: dict[str, Any]) -> list[str]:
-    return _expand_command_skills(cmd.get("skills"), skillsets)
-
-
-def _format_branch_skills(raw: Any) -> str:
-    if not isinstance(raw, list) or not raw:
-        return ""
-    tokens = [s if s.startswith("@") else f"@{s}" for s in raw if isinstance(s, str)]
-    if len(tokens) == 1:
-        return tokens[0]
-    inner = ", ".join(tokens[:-1])
-    return f"{inner}, or {tokens[-1]}"
-
-
-def _emit_skill_notes(
-    lines: list[str],
+def _next_step_template_and_values(
     *,
-    next_cmd_id: Optional[str],
-    workflows: dict[str, Any],
-    commands: dict[str, Any],
-    skillsets: dict[str, Any],
-) -> None:
-    if not next_cmd_id:
-        return
-    next_wf = (workflows.get("commands") or {}).get(next_cmd_id) or {}
-    next_cmd_def = commands.get(next_cmd_id) or {}
-    attached = _attached_skills_for_command(next_cmd_def, skillsets)
-    if attached:
-        lines.append(
-            f"_Skills for `/{next_cmd_id}` (auto-attached):_ {_format_skill_list(attached)}"
-        )
-    manual = next_wf.get("manual_skills") or {}
-    if manual:
-        parts = [f"`@{k}` ({v})" for k, v in manual.items()]
-        lines.append(f"_Layer manually if scope requires:_ {', '.join(parts)}")
-
-
-def _next_step_block(
-    *,
-    cmd_id: str,
+    cmd: dict[str, Any],
     wf_entry: dict[str, Any],
-    skillsets: dict[str, Any],
-    commands: dict[str, Any],
-    workflows: dict[str, Any],
+    artifact_dir: str,
+) -> tuple[Optional[str], dict[str, str]]:
+    wf_entry = wf_entry or {}
+    next_raw = wf_entry.get("next")
+    next_cmd = next_raw.strip() if isinstance(next_raw, str) else ""
+
+    section_raw = wf_entry.get("review_section") or wf_entry.get("section")
+    review_section = f" ({section_raw})" if section_raw else ""
+
+    output = str(cmd.get("output") or "")
+    output_path = _artifact_path(output, artifact_dir=artifact_dir) if output else ""
+    show_review = bool(cmd.get("source")) and bool(output_path) and bool(next_cmd)
+
+    if not next_cmd:
+        return None, {}
+
+    vals = {
+        "output_path": output_path,
+        "review_section": review_section,
+        "next": next_cmd,
+    }
+    if show_review and next_cmd:
+        return "next-step-review", vals
+    if next_cmd:
+        return "next-step", vals
+    return None, {}
+
+
+def _render_next_step(
+    *,
+    cmd: dict[str, Any],
+    wf_entry: dict[str, Any],
+    artifact_dir: str,
+    templates_dir: Path = TEMPLATES_DIR,
 ) -> str:
-    lines: list[str] = [
-        "**When done — print this as your final message:**",
-        "",
-        "### Next recommended step",
-    ]
-
-    review = wf_entry.get("review") or {}
-    default = wf_entry.get("default") or {}
-    branches = wf_entry.get("branches") or []
-    also = wf_entry.get("also") or []
-    manual_skills = wf_entry.get("manual_skills") or {}
-
-    step_num = 1
-
-    if isinstance(review, dict) and review.get("doc"):
-        doc = review["doc"]
-        prompt = review.get("prompt", "")
-        section = review.get("section")
-        if section:
-            lines.append(f"{step_num}. **Review** `{doc}` ({section} section) — {prompt}.")
-        else:
-            lines.append(f"{step_num}. **Review** `{doc}` — {prompt}.")
-        step_num += 1
-
-    if default.get("command"):
-        next_cmd = default["command"]
-        why = default.get("why", "")
-        why_suffix = f" to {why}" if why else ""
-        skills_raw = default.get("skills")
-        note = default.get("note")
-        if skills_raw:
-            formatted = _format_branch_skills(skills_raw)
-            lines.append(f"{step_num}. **Run** `/{next_cmd}` {formatted}{why_suffix}.")
-        else:
-            lines.append(f"{step_num}. **Run** `/{next_cmd}`{why_suffix}.")
-        if note:
-            lines.append(f"   _{note}_")
-        step_num += 1
-    elif default.get("note"):
-        lines.append(f"{step_num}. {default['note'].rstrip('.')}.")
-        step_num += 1
-
-    if branches:
-        if step_num > 1:
-            lines.append("")
-        if default.get("command"):
-            lines.append("_Alternatively:_")
-        elif len(branches) > 1:
-            lines.append("Inspect project state and pick **one**:")
-        else:
-            lines.append("Inspect project state:")
-        for branch in branches:
-            if not isinstance(branch, dict):
-                continue
-            when = branch.get("when", "")
-            cmd = branch.get("command")
-            note = branch.get("note")
-            skills_raw = branch.get("skills")
-            if cmd:
-                skill_suffix = ""
-                if skills_raw:
-                    formatted = _format_branch_skills(skills_raw)
-                    skill_suffix = f" with {formatted}"
-                    if note:
-                        skill_suffix += f" ({note.rstrip('.')})"
-                elif note:
-                    skill_suffix = f" — {note.rstrip('.')}"
-                lines.append(f"- **{when}** → `/{cmd}`{skill_suffix}")
-            elif note:
-                lines.append(f"- **{when}** — {note.rstrip('.')}")
-
-    if also:
-        lines.append("")
-        for item in also:
-            if not isinstance(item, dict):
-                continue
-            when = item.get("when", "")
-            cmd = item.get("command")
-            if cmd:
-                lines.append(f"_Also:_ if {when}, run `/{cmd}`.")
-
-    skill_note_lines: list[str] = []
-    if default.get("command"):
-        _emit_skill_notes(
-            skill_note_lines,
-            next_cmd_id=default["command"],
-            workflows=workflows,
-            commands=commands,
-            skillsets=skillsets,
-        )
-    if manual_skills:
-        parts = [f"`@{k}` ({v})" for k, v in manual_skills.items()]
-        skill_note_lines.append(f"_Layer manually if scope requires:_ {', '.join(parts)}")
-    if skill_note_lines:
-        lines.append("")
-        lines.extend(skill_note_lines)
-
-    return "\n".join(lines)
+    template_name, vals = _next_step_template_and_values(
+        cmd=cmd, wf_entry=wf_entry, artifact_dir=artifact_dir
+    )
+    if not template_name:
+        return ""
+    return _render_partial(template_name, vals, templates_dir=templates_dir)
 
 
 def _render_command(
@@ -403,6 +367,7 @@ def _render_command(
     skillsets: dict[str, Any],
     commands: dict[str, Any],
     workflows: dict[str, Any],
+    artifact_dir: str,
     templates_dir: Path = TEMPLATES_DIR,
 ) -> str:
     description = _single_quote_yaml(str(cmd.get("description") or cmd_id))
@@ -416,23 +381,21 @@ def _render_command(
         if model:
             model_line = f"model: {model}"
 
-    output_stmt = _output_statement(
+    output_stmt = _render_artifact(
         schema=cmd.get("source"),
         output=cmd.get("output"),
         sections=_parse_sections(cmd.get("sections")),
+        artifact_dir=artifact_dir,
+        templates_dir=templates_dir,
     )
 
     wf_commands = workflows.get("commands") or {}
-    wf_entry = wf_commands.get(cmd_id)
-    if not wf_entry:
+    if cmd_id not in wf_commands:
         raise SystemExit(f"workflows.yaml: missing entry for command {cmd_id!r}")
+    wf_entry = wf_commands.get(cmd_id) or {}
 
-    next_step = _next_step_block(
-        cmd_id=cmd_id,
-        wf_entry=wf_entry,
-        skillsets=skillsets,
-        commands=commands,
-        workflows=workflows,
+    next_step = _render_next_step(
+        cmd=cmd, wf_entry=wf_entry, artifact_dir=artifact_dir, templates_dir=templates_dir
     )
 
     return _apply_template(
@@ -454,6 +417,7 @@ def _render_skill(
     target: str,
     skill: dict[str, Any],
     skill_id: str,
+    artifact_dir: str,
     templates_dir: Path = TEMPLATES_DIR,
 ) -> str:
     description = _single_quote_yaml(str(skill.get("description") or ""))
@@ -467,10 +431,12 @@ def _render_skill(
     if isinstance(paths_raw, str):
         paths_block = _yaml_list_block("paths", _csv_globs(paths_raw))
 
-    output_stmt = _output_statement(
+    output_stmt = _render_artifact(
         schema=skill.get("source"),
         output=skill.get("output"),
         sections=_parse_sections(skill.get("sections")),
+        artifact_dir=artifact_dir,
+        templates_dir=templates_dir,
     )
 
     return _apply_template(
@@ -487,7 +453,7 @@ def _render_skill(
 
 
 def _render_rule_cursor(
-    *, rule: dict[str, Any], body: str, templates_dir: Path = TEMPLATES_DIR
+    *, rule: dict[str, Any], body: str, artifact_dir: str, templates_dir: Path = TEMPLATES_DIR
 ) -> str:
     cursor_t = (rule.get("targets") or {}).get("cursor") or {}
     always_apply = bool(cursor_t.get("alwaysApply", False))
@@ -500,13 +466,13 @@ def _render_rule_cursor(
             "description": _single_quote_yaml(str(rule.get("description") or "")),
             "globs_block": globs_block,
             "alwaysApply": "true" if always_apply else "false",
-            "body": body.rstrip(),
+            "body": _apply_project(body, artifact_dir).rstrip(),
         },
     )
 
 
 def _render_rule_claude(
-    *, rule: dict[str, Any], body: str, templates_dir: Path = TEMPLATES_DIR
+    *, rule: dict[str, Any], body: str, artifact_dir: str, templates_dir: Path = TEMPLATES_DIR
 ) -> str:
     cursor_t = (rule.get("targets") or {}).get("cursor") or {}
     always_apply = bool(cursor_t.get("alwaysApply", False))
@@ -520,7 +486,7 @@ def _render_rule_claude(
         _load_template("claude", "rule", templates_dir=templates_dir),
         {
             "paths_block": paths_block,
-            "body": body.rstrip(),
+            "body": _apply_project(body, artifact_dir).rstrip(),
         },
     )
 
@@ -536,6 +502,7 @@ def _build_target(
     selection: BuildSelection,
     recipes: dict[str, Any],
     paths: BuildPaths,
+    project: ProjectConfig,
 ) -> _BuildResult:
     recipes_dir = paths.recipes_dir
     templates_dir = paths.templates_dir
@@ -545,6 +512,8 @@ def _build_target(
     outputs: dict[str, Any] = recipes["outputs"]
     rules_index: dict[str, Any] = recipes["rules_index"]
     workflows: dict[str, Any] = recipes["workflows"]
+
+    artifact_dir = project.artifact_dir
 
     out_root = paths.dist_dir / target
     result = _BuildResult()
@@ -575,10 +544,14 @@ def _build_target(
             continue
         body = _read_text(recipes_dir / body_rel).rstrip()
         if target == "cursor":
-            content = _render_rule_cursor(rule=rule, body=body, templates_dir=templates_dir)
+            content = _render_rule_cursor(
+                rule=rule, body=body, artifact_dir=artifact_dir, templates_dir=templates_dir
+            )
             rel = f"rules/{rule_key}.mdc"
         else:
-            content = _render_rule_claude(rule=rule, body=body, templates_dir=templates_dir)
+            content = _render_rule_claude(
+                rule=rule, body=body, artifact_dir=artifact_dir, templates_dir=templates_dir
+            )
             rel = f"rules/{rule_key}.md"
         result.expected.add(rel)
         if _write_if_changed(out_root / rel, content):
@@ -595,6 +568,7 @@ def _build_target(
             skillsets=skillsets,
             commands=commands,
             workflows=workflows,
+            artifact_dir=artifact_dir,
             templates_dir=templates_dir,
         )
         rel = f"commands/{cmd_id}.md"
@@ -610,6 +584,7 @@ def _build_target(
             target=target,
             skill=skill,
             skill_id=skill_id,
+            artifact_dir=artifact_dir,
             templates_dir=templates_dir,
         )
         rel = f"skills/{skill_id}/SKILL.md"
@@ -655,6 +630,11 @@ def _parse_args(argv: list[str]) -> tuple[BuildSelection, BuildPaths]:
         default=None,
         help="Output root (default: repo dist/)",
     )
+    parser.add_argument(
+        "--artifact-dir",
+        default=None,
+        help="Override recipes/project.yaml artifact_dir (env: AI_DEV_ARTIFACT_DIR)",
+    )
     ns = parser.parse_args(argv)
 
     targets = {"cursor", "claude"} if ns.target == "all" else {ns.target}
@@ -666,19 +646,25 @@ def _parse_args(argv: list[str]) -> tuple[BuildSelection, BuildPaths]:
         recipes_dir=(ns.recipes_dir or RECIPES_DIR).resolve(),
         dist_dir=(ns.dist_dir or DIST_DIR).resolve(),
     )
-    return selection, paths
+    return selection, paths, ns.artifact_dir
 
 
-def run_build(selection: BuildSelection, paths: BuildPaths = DEFAULT_PATHS) -> int:
+def run_build(
+    selection: BuildSelection,
+    paths: BuildPaths = DEFAULT_PATHS,
+    *,
+    artifact_dir: Optional[str] = None,
+) -> int:
+    project = _load_project_config(paths.recipes_dir, override=artifact_dir)
     recipes = _collect_recipes(paths)
     for t in sorted(selection.targets):
-        _build_target(t, selection, recipes, paths)
+        _build_target(t, selection, recipes, paths, project)
     return 0
 
 
 def main(argv: list[str]) -> int:
-    selection, paths = _parse_args(argv)
-    return run_build(selection, paths)
+    selection, paths, artifact_dir = _parse_args(argv)
+    return run_build(selection, paths, artifact_dir=artifact_dir)
 
 
 if __name__ == "__main__":

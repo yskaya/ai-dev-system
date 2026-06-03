@@ -21,13 +21,11 @@ Avoid:
 - rewriting unrelated `NNN-REVIEW.md` sections
 - skipping third-party and AI integration surfaces
 
-Output: Read `schemas/REVIEW.md` for context. Update sections `Security` in `NNN-REVIEW.md` (create the file if missing).
+**Artifact (required)**
+- Read `schemas/REVIEW.md` before writing.
+- Update sections `Security` in `docs/ai/NNN-REVIEW.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Leave other sections unchanged.
+- Use schema headings exactly; substitute real work id (`001`) when known.
 
-**When done — print this as your final message:**
-
-### Next recommended step
-1. **Review** `NNN-REVIEW.md` (Security section) — Check security findings and P0–P3 rankings.
-
-Inspect project state and pick **one**:
-- **P0 security findings need tracking or investigation** → `/debug` — Findings may also be appended to NNN-ISSUES.md or ISSUES.md
-- **no P0 blockers** → `/doc-pr`
+### Next Step
+Review `NNN-REVIEW.md` (Security) and run `/doc-pr`

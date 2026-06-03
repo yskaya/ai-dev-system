@@ -61,7 +61,6 @@ Default location: `docs/ai/`. Pick another folder if you prefer — stay consist
 | `NNN-BRIEF.md` | New product or greenfield scope |
 | `NNN-DESIGN.md` | Architecture decisions before significant build work |
 | `NNN-PLAN.md` | Task breakdown for features or MVP delivery |
-| `NNN-REFACTOR.md` | Phased structural change (no feature mix-in) |
 | `NNN-REVIEW.md` | Code or security review output |
 | `NNN-ISSUES.md` | Tracked findings from reviews |
 | `ISSUES.md` | Ad-hoc bugs (no `NNN`) |
@@ -98,9 +97,9 @@ You rarely invoke rules directly — they are the floor.
 
 | Rule | Scope | Purpose |
 |---|---|---|
-| `00-operating-principles` | Always on | Smallest useful change; stay in scope; follow command schemas; stop when requirements conflict; print **Next recommended step** at end of slash commands |
+| `00-operating-principles` | Always on | Smallest useful change; layer stack; required `docs/ai/` artifacts; print **Next recommended step** at end of slash commands |
 | `01-fullstack-typescript` | `**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}` | Baseline TS/JS discipline; stack skills layer implementation detail on matching paths |
-| `02-documentation` | Always on | When to write docs; command outputs must follow schemas — no invented structure |
+| `02-documentation` | Always on | When to write docs; `docs/ai/` slash-command artifacts are always required on disk |
 
 Bodies live in `recipes/rules/*.md`; build emits platform-specific rule files into your project.
 
@@ -157,7 +156,6 @@ Some mode skills declare `sections:` — they update only those headings in `NNN
 | `BRIEF.md` | Product intent — goal, MVP, non-goals, success criteria | `/create-brief` | `docs/ai/NNN-BRIEF.md` |
 | `DESIGN.md` | Full-stack architecture — modules, contracts, auth, data flow, decisions | `/design-web` | `docs/ai/NNN-DESIGN.md` |
 | `PLAN.md` | Milestones with build-step-sized tasks and acceptance criteria | `/plan-work` | `docs/ai/NNN-PLAN.md` |
-| `REFACTOR.md` | Phased structural change — test-gated milestones, no feature mix-in | `/plan-refactor` | `docs/ai/NNN-REFACTOR.md` |
 | `REVIEW.md` | Review decision, P0–P3 findings, security section | `/review-code`, `/review-security` | `docs/ai/NNN-REVIEW.md` |
 | `ISSUES.md` | Bug investigation block + prioritized backlog | `/debug` | `ISSUES.md` or `NNN-ISSUES.md` |
 | `SETUP.md` | Repo scaffold — stack, folder tree, env vars, scripts | *(no command)* | Create manually, e.g. `docs/ai/SETUP.md` |
@@ -173,8 +171,6 @@ Schemas are intentionally minimal — headings and one-line hints, not prose tem
 **Plans (`PLAN.md`)** — milestones with checkbox tasks. Each task names affected files and acceptance criteria sized for one `/build-step`.
 
 **Briefs (`BRIEF.md`)** — product intent only: goal, MVP scope, non-goals, success criteria, assumptions, risks. No implementation.
-
-**Refactor plans (`REFACTOR.md`)** — phased structural work. Each milestone must pass tests before the next; no feature or bug-fix mix-in per phase.
 
 **Reviews (`REVIEW.md`)** — decision (Approve / Request changes / Hold), blocking issues, warnings, security findings, prod risks.
 
@@ -206,7 +202,7 @@ Install writes **both** `.cursor/` and `.claude/` by default. Use one tool, both
 |---|---|---|
 | **Cursor** | Day-to-day coding, `/build-step`, `/debug`, `/write-unit-tests` | IDE-integrated edits; stack skills auto-attach on matching file paths |
 | **Claude Code** | `/create-brief`, `/design-web`, `/review-code`, `/review-security` | Long reasoning sessions; explicit **Opus** routing on design and review commands |
-| **Either** | `/plan-work`, `/plan-refactor`, `/doc-pr` | Planning uses **Sonnet** on Claude; Cursor works fine if you prefer one tool |
+| **Either** | `/plan-work`, `/doc-pr` | Planning uses **Sonnet** on Claude; Cursor works fine if you prefer one tool |
 
 You do not need both installed in daily use — pick one primary editor and keep the other tree for occasional sessions or teammates.
 
@@ -284,17 +280,6 @@ Skip or shorten steps based on size:
 
 Always assign a new `NNN` when the feature needs its own plan and review trail.
 
-### Refactoring
-
-Structural debt — module boundaries, rename migrations, extract service — not bug fixes or features.
-
-1. **Plan** — `/plan-refactor` → `NNN-REFACTOR.md`. Phases are test-gated; no mixed work per milestone.
-2. **Execute** — Treat each refactor milestone like a plan task: one `/build-step`-sized change per phase, or work through REFACTOR checkboxes manually with the same discipline.
-3. **Verify** — Tests green after each phase; `/review-code` before merge.
-4. **Measure** — Fill REFACTOR **Measurements** when done.
-
-If the refactor changes architecture, update `NNN-DESIGN.md` in the same initiative.
-
 ### Bug fix
 
 1. **Investigate** — `/debug` → `ISSUES.md` (or `NNN-ISSUES.md` if tied to an initiative). Reproduce before theorizing; name root cause before editing.
@@ -313,7 +298,6 @@ For defects found in review, `/review-security` or `/review-code` may append to 
 | `/create-brief` | `NNN-BRIEF.md` | New product or greenfield; need aligned MVP scope | Skip for small changes to existing systems — use `/plan-work` |
 | `/design-web` | `NNN-DESIGN.md` | Before significant build; API/auth/data-flow decisions | Reads brief when present; layer extra skills for AI, realtime, microservices |
 | `/plan-work` | `NNN-PLAN.md` | Feature or MVP implementation breakdown | Tasks sized for `/build-step`; reads brief + design |
-| `/plan-refactor` | `NNN-REFACTOR.md` | Structural debt, phased safe refactors | Not for features or bug fixes mixed into phases |
 | `/build-step` | *(code)* | Implement next unchecked plan task | Layer `@set-web`, `@set-api`, `@set-service`, or `@set-microservice` |
 | `/debug` | `ISSUES.md` | Reproduce and fix a bug | Investigation before code; minimal fix only |
 | `/review-code` | `NNN-REVIEW.md` | Correctness, maintainability, plan alignment | Run `/review-security` for auth/input/integration surfaces |
@@ -330,9 +314,9 @@ For defects found in review, `/review-security` or `/review-code` may append to 
 
 ### Next recommended step (workflow handoff)
 
-When a slash command finishes, the agent prints a **Next recommended step** block as its final message. Each built command includes a compiled **When done** section that tells the agent what to recommend — review which artifact, run which command next, and which skills to layer manually.
+When a slash command finishes, the agent prints a compact **Next recommended step** block as its final message — a short review line, optional default command, and branch list (e.g. unchecked plan tasks → `/build-step`; all done → `/review-code`).
 
-The agent inspects project state for branching decisions (e.g. unchecked plan tasks → loop `/build-step`; all done → `/review-code`). It distinguishes **auto-attached** skills (listed in the command's `Skills:` line) from **manual** `@` skills you must add yourself.
+Commands with `source`/`output` also include **Artifact (required)** — write `docs/ai/NNN-*.md` on disk (not chat-only), following the schema. Layer stack skills are in operating principles; pick `@set-web`, `@set-api`, or `@set-service` manually per task.
 
 Maintainers: workflow transitions live in `recipes/workflows.yaml` and are compiled into commands at build time.
 

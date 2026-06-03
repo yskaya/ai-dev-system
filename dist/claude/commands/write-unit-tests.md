@@ -15,9 +15,5 @@ Avoid:
 - snapshot-heavy or implementation-coupled tests
 - low-signal tests that only exercise mocks or internal structure
 
-**When done — print this as your final message:**
-
-### Next recommended step
-Inspect project state and pick **one**:
-- **unchecked tasks remain in NNN-PLAN.md** → `/build-step` with @set-web, @set-api, or @set-service
-- **all plan tasks done or no plan in scope** → `/doc-pr`
+### Next Step
+Run `/build-step`

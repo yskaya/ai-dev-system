@@ -16,12 +16,10 @@ Layer when scope requires it:
 - Service decomposition → @microservices or @set-microservice
 - Monorepo layout → @monorepo
 
-Output: Read `schemas/DESIGN.md` for context. Create or update `NNN-DESIGN.md`.
+**Artifact (required)**
+- Read `schemas/DESIGN.md` before writing.
+- Write `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Use schema headings exactly; substitute real work id (`001`) when known.
 
-**When done — print this as your final message:**
-
-### Next recommended step
-1. **Review** `NNN-DESIGN.md` — Verify API contract, auth boundaries, and data flow.
-2. **Run** `/plan-work`.
-
-_Layer manually if scope requires:_ `@ai-architecture` (LLM/RAG/chat in scope), `@realtime` (live updates in scope), `@set-microservice` (service decomposition), `@monorepo` (monorepo layout)
+### Next Step
+Review `NNN-DESIGN.md` and run `/plan-work`

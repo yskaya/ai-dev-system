@@ -21,7 +21,3 @@ ISSUES.md:
 SETUP.md:
   path: schemas/SETUP.md
   description: New codebase or module scaffold — structure, entry points, exports, known issues
-
-REFACTOR.md:
-  path: schemas/REFACTOR.md
-  description: Phased refactoring plan — changes per phase, risk mitigation, success criteria

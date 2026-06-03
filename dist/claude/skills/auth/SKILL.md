@@ -14,4 +14,8 @@ Avoid:
 - mixing authentication and authorization in the same layer
 - tokens in localStorage or non-HttpOnly cookies
 
-Output: Read `schemas/DESIGN.md` for context. Update sections `Auth & trust model` in `NNN-DESIGN.md` (create the file if missing).
+**Artifact (required)**
+- Read `schemas/DESIGN.md` before writing.
+- Update sections `Auth & trust model` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Leave other sections unchanged.
+- Use schema headings exactly; substitute real work id (`001`) when known.

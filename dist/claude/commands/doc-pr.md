@@ -32,10 +32,5 @@ Avoid:
 - listing every file or pasting the diff
 - more than 200 words outside the test plan checklist
 
-**When done — print this as your final message:**
-
-### Next recommended step
-1. Open or update the PR with the drafted description.
-
-Inspect project state:
-- **initiative complete — all plan tasks checked and review approved** → `/create-brief` — Start the next initiative with a new NNN id, or run /plan-work for the next feature
+### Next Step
+Run `/create-brief`
