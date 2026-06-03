@@ -155,10 +155,6 @@ def _render_artifact(
     )
     if not template_name:
         return ""
-    if template_name in ("artifact-write", "artifact-edit"):
-        vals["artifact_header"] = _render_partial(
-            "artifact-header", {}, templates_dir=templates_dir
-        )
     return _render_partial(template_name, vals, templates_dir=templates_dir)
 
 

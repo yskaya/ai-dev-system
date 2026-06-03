@@ -1,3 +1,7 @@
+<!--
+************* AI GENERATED *******************
+-->
+
 ## Goal
 
 One sentence: what this delivers and for whom.
@@ -8,7 +12,7 @@ Size: S / M / L — rationale.
 
 Feature bullets only — what's in, what's out.
 
-## Non-goals
+## Out of scope
 
 Deferred work and why it's out of scope.
 
@@ -16,10 +20,7 @@ Deferred work and why it's out of scope.
 
 Measurable outcomes — specific, not vague.
 
-## Assumptions
 
-Unknowns that affect scope.
+## Risks / Assumptions
 
-## Risks
-
-Product and user-facing risks only.
+Unknowns that affect scope. Product and user-facing risks only.

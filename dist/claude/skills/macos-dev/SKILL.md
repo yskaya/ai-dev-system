@@ -26,11 +26,5 @@ Avoid:
 
 **Artifact (required)**
 - Read `schemas/DESIGN.md` before writing.
-- Ensure the file starts with this header; prepend if missing (verbatim):
-<!--
-******************************************************
-*****                AI GENERATED                *****
-******************************************************
--->
 - Update sections `System structure`, `API contracts`, `Data flow`, `Auth & trust model`, `Key decisions` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only.
 - Leave other sections unchanged.

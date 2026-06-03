@@ -9,7 +9,6 @@ Emitted file shapes for `scripts/build.py`. The build **loads these `.tmpl` file
 | `cursor/command.tmpl`, `claude/command.tmpl` | Slash commands |
 | `cursor/skill.tmpl`, `claude/skill.tmpl` | Skills |
 | `cursor/rule.tmpl`, `claude/rule.tmpl` | Rules |
-| `_shared/artifact-header.tmpl` | HTML comment prepended to generated docs — edit banner here |
 | `_shared/artifact-write.tmpl` | Full write — `source` + `output`, no `sections` |
 | `_shared/artifact-edit.tmpl` | Section update — `source` + `output` + `sections` |
 | `_shared/artifact-read.tmpl` | `source` only (e.g. `/build-step`) |
@@ -62,7 +61,8 @@ Placeholders (normalized from recipe YAML):
 | `{artifact_dir}` | `project.yaml` → `artifact_dir` |
 | `{output_path}` | `output:` via `_artifact_path()` |
 | `{sections}` | `sections:` as `` `A`, `B` `` |
-| `{artifact_header}` | rendered from `artifact-header.tmpl` (write/edit only) |
+
+Schema headers live in `recipes/schemas/*.md` and copy verbatim to `dist/*/schemas/`.
 
 ## Next-step partials
 

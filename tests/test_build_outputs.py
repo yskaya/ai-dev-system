@@ -94,6 +94,11 @@ class TestProductionBuild(unittest.TestCase):
         self.assertIn("Layer stack", rules)
         self.assertIn("@set-web", rules)
 
+    def test_schemas_include_header(self) -> None:
+        brief = read_text(ROOT / "recipes/schemas/BRIEF.md")
+        self.assertIn("AI GENERATED", brief)
+        self.assertTrue((ROOT / "dist/cursor/schemas/BRIEF.md").exists())
+
     def test_schemas_are_copied_to_both_targets(self) -> None:
         schemas = list((ROOT / "recipes/schemas").glob("*.md"))
         self.assertGreater(len(schemas), 0)

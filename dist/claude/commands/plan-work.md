@@ -11,12 +11,6 @@ Each task must be one `/build-step`-sized unit, completable and verifiable on it
 
 **Artifact (required)**
 - Read `schemas/PLAN.md` before writing.
-- Prepend this header at the very top of the file (verbatim):
-<!--
-******************************************************
-*****                AI GENERATED                *****
-******************************************************
--->
 - Write `docs/ai/NNN-PLAN.md` on disk — not chat-only. Create `docs/ai/` if missing. Use schema headings exactly.
 
 ### Next Step

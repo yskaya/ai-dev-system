@@ -1,3 +1,7 @@
+<!--
+********************** AI GENERATED ********************************
+-->
+
 ## Stack
 
 Languages, frameworks, and key libraries — include versions when pinned.

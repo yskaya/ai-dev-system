@@ -1,3 +1,7 @@
+<!--
+********************** AI GENERATED ********************************
+-->
+
 ## Technical complexity
 
 Constraints, unknowns, and integration surface area.

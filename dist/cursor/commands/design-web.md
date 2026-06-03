@@ -18,12 +18,6 @@ Layer when scope requires it:
 
 **Artifact (required)**
 - Read `schemas/DESIGN.md` before writing.
-- Prepend this header at the very top of the file (verbatim):
-<!--
-******************************************************
-*****                AI GENERATED                *****
-******************************************************
--->
 - Write `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing. Use schema headings exactly.
 
 ### Next Step
