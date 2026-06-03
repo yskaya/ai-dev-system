@@ -33,6 +33,7 @@ python3 -m unittest discover -s tests
 | `recipes/schemas/*.md` | Output document shapes |
 | `recipes/skillsets.yaml` | Bundling skills (`@set-web`, …) |
 | `recipes/workflows.yaml` | Command transition graph → **Next recommended step** blocks |
+| `recipes/project.yaml` | Project paths (`artifact_dir`) compiled into commands, skills, rules |
 | `recipes/outputs.yaml` | Schema index (validation only) |
 | `templates/` | Platform-specific emitted shapes (Cursor `.mdc`, Claude frontmatter) |
 | `scripts/build.py` | Compiler logic |

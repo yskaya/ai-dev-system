@@ -22,4 +22,4 @@ Auth, input handling, or external integrations → run `/review-security`, then 
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-REVIEW.md` and run `/doc-pr`
+Review `docs/ai/NNN-REVIEW.md` and run `/doc-pr`

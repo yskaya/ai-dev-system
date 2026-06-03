@@ -22,4 +22,4 @@ Layer when scope requires it:
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-DESIGN.md` and run `/plan-work`
+Review `docs/ai/NNN-DESIGN.md` and run `/plan-work`

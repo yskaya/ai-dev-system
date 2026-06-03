@@ -10,4 +10,4 @@ Minimal command body.
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-OUT.md` and run `/cmd-skills-direct`
+Review `docs/ai/NNN-OUT.md` and run `/cmd-skills-direct`

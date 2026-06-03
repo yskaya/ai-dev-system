@@ -15,7 +15,16 @@ Emitted file shapes for `scripts/build.py`. The build **loads these `.tmpl` file
 | `_shared/next-step.tmpl` | `next:` only — no review line |
 | `_shared/next-step-review.tmpl` | `source` + `output` + `review` + `next` |
 
-**Shared partials** hold the markdown structure. `scripts/build.py` normalizes recipe fields into placeholder dicts, then renders partials via `_render_partial()`. Edit `_shared/*.tmpl` to restructure output; edit `_artifact_template_and_values()` / `_next_step_template_and_values()` when field normalization changes.
+**Shared partials** hold the markdown structure. `scripts/build.py` loads `recipes/project.yaml` for `{artifact_dir}`, normalizes recipe fields into placeholder dicts, then renders partials via `_render_partial()`.
+
+## Project config (`recipes/project.yaml`)
+
+| Field | Default | Used in |
+|---|---|---|
+| `artifact_dir` | `docs/ai` | artifact partials, next-step review path, rules |
+
+Override at build: `--artifact-dir` or env `AI_DEV_ARTIFACT_DIR`.  
+Override per app at install: `.ai-dev-system.yaml` in project root or `install.py --artifact-dir`.
 
 ## Command / skill placeholders
 
@@ -49,6 +58,7 @@ Placeholders (normalized from recipe YAML):
 | Placeholder | From |
 |---|---|
 | `{source}` | `source:` |
+| `{artifact_dir}` | `project.yaml` → `artifact_dir` |
 | `{output_path}` | `output:` via `_artifact_path()` |
 | `{sections}` | `sections:` as `` `A`, `B` `` |
 
@@ -65,7 +75,7 @@ Placeholders:
 
 | Placeholder | From |
 |---|---|
-| `{output}` | command `output:` |
+| `{output_path}` | command `output:` via `_artifact_path()` |
 | `{review_section}` | workflow `review_section:` (optional, e.g. ` (Security)`) |
 | `{next}` | workflow `next:` |
 

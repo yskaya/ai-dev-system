@@ -21,4 +21,4 @@ Avoid:
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `ISSUES.md` and run `/build-step`
+Review `docs/ai/ISSUES.md` and run `/build-step`

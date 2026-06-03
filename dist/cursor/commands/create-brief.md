@@ -11,4 +11,4 @@ Focus on product intent (what and why), not implementation details.
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-BRIEF.md` and run `/design-web`
+Review `docs/ai/NNN-BRIEF.md` and run `/design-web`

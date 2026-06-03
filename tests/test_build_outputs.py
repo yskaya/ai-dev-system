@@ -50,8 +50,6 @@ class TestProductionBuild(unittest.TestCase):
         self.assertIn("Run `/build-step`", cmd)
 
     def test_custom_artifact_dir(self) -> None:
-        import subprocess
-
         subprocess.run(
             ["python3", "scripts/build.py", "cursor", "create-brief", "--artifact-dir", "docs/custom"],
             cwd=str(ROOT),
@@ -73,6 +71,7 @@ class TestProductionBuild(unittest.TestCase):
             text=True,
         )
 
+    def test_create_brief_handoff_is_compact(self) -> None:
         cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
         self.assertIn("Review `docs/ai/NNN-BRIEF.md` and run `/design-web`", cmd)
         self.assertNotIn("Alternatively:", cmd)

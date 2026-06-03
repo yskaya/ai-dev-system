@@ -146,7 +146,7 @@ class TestFixtureCommandSemantics(FixtureBuildTestCase):
     def test_next_handoff_covers_review_and_next(self) -> None:
         path = self.dist_dir / "cursor/commands/cmd-next-rich.md"
         text = read_text(path)
-        self.assertIn("Review `NNN-OUT.md` (Alpha) and run `/cmd-minimal`", text)
+        self.assertIn("Review `docs/ai/NNN-OUT.md` (Alpha) and run `/cmd-minimal`", text)
         self.assertNotIn("Alternatively:", text)
         self.assertNotIn("_Also:_", text)
         self.assertNotIn("_Layer manually:_", text)

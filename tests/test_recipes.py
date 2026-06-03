@@ -98,6 +98,11 @@ class TestRecipes(unittest.TestCase):
                 self.assertIn(model, allowed, f"{path.name}: use model opus or sonnet, got {model!r}")
             self.assertNotIn("routing", claude, f"{path.name}: use model instead of routing")
 
+    def test_project_yaml_exists(self) -> None:
+        project = yaml.safe_load(_read_text(RECIPES / "project.yaml")) or {}
+        self.assertIn("artifact_dir", project)
+        self.assertTrue(str(project["artifact_dir"]).strip())
+
     def test_workflows_cover_all_commands(self) -> None:
         workflows = yaml.safe_load(_read_text(RECIPES / "workflows.yaml")) or {}
         wf_commands = workflows.get("commands") or {}

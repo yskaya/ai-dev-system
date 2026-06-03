@@ -26,4 +26,4 @@ Avoid:
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-REVIEW.md` (Security) and run `/doc-pr`
+Review `docs/ai/NNN-REVIEW.md` (Security) and run `/doc-pr`

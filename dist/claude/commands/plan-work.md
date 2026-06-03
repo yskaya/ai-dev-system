@@ -15,4 +15,4 @@ Each task must be one `/build-step`-sized unit, completable and verifiable on it
 - Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
-Review `NNN-PLAN.md` and run `/build-step`
+Review `docs/ai/NNN-PLAN.md` and run `/build-step`
