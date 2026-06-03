@@ -44,7 +44,9 @@ curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/i
 
 This copies predefined rules, commands, skills, and schemas into `.cursor/` (and `.claude/` unless you pass `--cursor-only`). Pin a version with `AI_DEV_SYSTEM_VERSION=v1.0.0` when [releases](https://github.com/yskaya/ai-dev-system/releases) exist.
 
-Then work entirely inside your repo's `.cursor/` or `.claude/` tree.
+**Overwrite warning:** install replaces the entire `.cursor/` and `.claude/` artifact trees. Do not mix personal slash commands or rules in those folders unless you accept losing them on reinstall — use a fork with `AI_DEV_SYSTEM_REPO`, or patch after install and skip upgrades.
+
+Then work entirely inside your repo's `.cursor/` or `.claude/` tree (and your app's `docs/ai/` for command outputs).
 
 ---
 
@@ -92,6 +94,16 @@ Schemas        →  bound to commands (output shape)
 
 You rarely invoke rules directly — they are the floor.
 
+#### Rules reference
+
+| Rule | Scope | Purpose |
+|---|---|---|
+| `00-operating-principles` | Always on | Smallest useful change; stay in scope; follow command schemas; stop when requirements conflict; print **Next recommended step** at end of slash commands |
+| `01-fullstack-typescript` | `**/*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}` | Baseline TS/JS discipline; stack skills layer implementation detail on matching paths |
+| `02-documentation` | Always on | When to write docs; command outputs must follow schemas — no invented structure |
+
+Bodies live in `recipes/rules/*.md`; build emits platform-specific rule files into your project.
+
 ### Commands
 
 **What:** Slash workflows (`/create-brief`, `/build-step`, …) with a defined job and optional schema binding.
@@ -138,6 +150,18 @@ Some mode skills declare `sections:` — they update only those headings in `NNN
 
 **Index:** `recipes/outputs.yaml` lists schemas for validation; build copies them to `dist/*/schemas/`.
 
+#### Schemas reference
+
+| Schema file | Purpose | Created by | Output path |
+|---|---|---|---|
+| `BRIEF.md` | Product intent — goal, MVP, non-goals, success criteria | `/create-brief` | `docs/ai/NNN-BRIEF.md` |
+| `DESIGN.md` | Full-stack architecture — modules, contracts, auth, data flow, decisions | `/design-web` | `docs/ai/NNN-DESIGN.md` |
+| `PLAN.md` | Milestones with build-step-sized tasks and acceptance criteria | `/plan-work` | `docs/ai/NNN-PLAN.md` |
+| `REFACTOR.md` | Phased structural change — test-gated milestones, no feature mix-in | `/plan-refactor` | `docs/ai/NNN-REFACTOR.md` |
+| `REVIEW.md` | Review decision, P0–P3 findings, security section | `/review-code`, `/review-security` | `docs/ai/NNN-REVIEW.md` |
+| `ISSUES.md` | Bug investigation block + prioritized backlog | `/debug` | `ISSUES.md` or `NNN-ISSUES.md` |
+| `SETUP.md` | Repo scaffold — stack, folder tree, env vars, scripts | *(no command)* | Create manually, e.g. `docs/ai/SETUP.md` |
+
 ---
 
 ## Document (schema) structure
@@ -169,6 +193,58 @@ Templates in `templates/` are **not** something you edit during normal product w
 **When you care:** Forking or extending this package — e.g. adding a new frontmatter field. Then update the `.tmpl` file and the placeholder assembly in `build.py` together. See [templates/README.md](templates/README.md) for placeholder reference.
 
 **When you don't:** Installing and using the system in your app repo. Edit `recipes/` only.
+
+---
+
+## Cursor vs Claude Code
+
+Install writes **both** `.cursor/` and `.claude/` by default. Use one tool, both, or split work across them — recipes compile to both from the same source.
+
+### When to use which
+
+| Tool | Best for | Why |
+|---|---|---|
+| **Cursor** | Day-to-day coding, `/build-step`, `/debug`, `/write-unit-tests` | IDE-integrated edits; stack skills auto-attach on matching file paths |
+| **Claude Code** | `/create-brief`, `/design-web`, `/review-code`, `/review-security` | Long reasoning sessions; explicit **Opus** routing on design and review commands |
+| **Either** | `/plan-work`, `/plan-refactor`, `/doc-pr` | Planning uses **Sonnet** on Claude; Cursor works fine if you prefer one tool |
+
+You do not need both installed in daily use — pick one primary editor and keep the other tree for occasional sessions or teammates.
+
+### Platform differences (when extending or debugging)
+
+| Feature | Cursor | Claude Code |
+|---|---|---|
+| Rules | `.mdc` — `alwaysApply`, optional `globs` | `.md` — optional `paths` frontmatter |
+| Stack skill auto-attach | `paths` in `SKILL.md` frontmatter | Skills listed on command via `Skills: @…` line |
+| Command frontmatter | `description` only | `description`, `triggers`, optional `model` |
+| Model routing | None (your model picker) | `opus` on design/review/security; `sonnet` on planning |
+| Slash commands | `.cursor/commands/*.md` | `.claude/commands/*.md` |
+
+Mixed skillsets (`@set-microservice`) are **manual on both platforms** — never auto-injected into `/build-step`.
+
+### Split-workflow example (solo dev)
+
+A practical pattern when you use both tools:
+
+**Session 1 — Claude Code (planning & design)**
+
+1. `/create-brief` → commit `docs/ai/001-BRIEF.md`
+2. `/design-web` → commit `001-DESIGN.md` (Opus; layer `@ai-architecture` if needed)
+3. `/plan-work` → commit `001-PLAN.md`
+
+**Session 2 — Cursor (implementation)**
+
+4. Open `001-PLAN.md`; run `/build-step @set-api` for the first unchecked task
+5. Repeat step 4 until all checkboxes pass — **always** include `@set-web`, `@set-api`, or `@set-service`
+
+**Session 3 — Claude Code (review & ship)**
+
+6. `/review-code` → `001-REVIEW.md`; `/review-security` if auth or external integrations changed
+7. `/doc-pr` → open PR with generated description
+
+Each session starts by reading committed `docs/ai/` files — no need to re-paste context from chat history.
+
+See [examples/minimal/](examples/minimal/) for artifact shapes at step 3–6.
 
 ---
 
@@ -302,18 +378,35 @@ Prefer skillsets at build time: `@set-web`, `@set-api`, `@set-service`.
 
 ## Customizing for your team
 
+### Fork and rebuild (recommended for lasting changes)
+
 1. **Adjust rules** — `recipes/rules/` for team conventions (keep always-on rules short).
 2. **Tune commands** — edit `body` in `recipes/commands/` for your doc paths or checklist habits.
 3. **Add skills** — new YAML under `recipes/skills/`; wire into commands or skillsets.
-4. **Rebuild** — `python3 scripts/build.py` then reinstall, or publish a new release tag for remote users.
+4. **Rebuild** — `python3 scripts/build.py` then `python3 scripts/install.py`, or publish a release tag and set `AI_DEV_SYSTEM_REPO` for remote install.
 
 Fork-friendly: the recipe layer is plain YAML and Markdown; no runtime dependency in your application.
+
+### Project-local edits (quick tweaks)
+
+You can edit files directly under `.cursor/` or `.claude/` in your app repo. Those changes work immediately but are **wiped on reinstall or upgrade**. Back up custom commands/rules, or move them outside the installed trees.
+
+### Safe customization paths
+
+| Approach | Survives reinstall? | Best for |
+|---|---|---|
+| Fork repo + local install or `AI_DEV_SYSTEM_REPO` | Yes | Team conventions, extra commands/skills |
+| Edit `recipes/` in a clone, rebuild, reinstall | Yes (your build) | Maintainers |
+| Patch `.cursor/` after install | No | One-off experiments |
+
+Keep `docs/ai/` and application code in your repo — install never touches them.
 
 ---
 
 ## Further reading
 
 - [README.md](README.md) — build, install, field reference, repo layout, tests
+- [CHANGELOG.md](CHANGELOG.md) — release history
 - [examples/minimal/](examples/minimal/) — sample `001-BRIEF.md` through `001-REVIEW.md` walkthrough
 - [CONTRIBUTING.md](CONTRIBUTING.md) — add skills, commands, run tests, cut releases
 - [templates/README.md](templates/README.md) — emitted file shapes and placeholders

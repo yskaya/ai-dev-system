@@ -4,7 +4,21 @@ Portable prompt system for **Cursor** and **Claude Code**: skills, slash command
 
 **Repo:** [github.com/yskaya/ai-dev-system](https://github.com/yskaya/ai-dev-system) · **Latest release:** [v1.0.0](https://github.com/yskaya/ai-dev-system/releases) · **License:** [MIT](LICENSE)
 
-**Using the system in your projects?** Start with [GUIDE.md](GUIDE.md) (philosophy, workflows, commands/skills reference). This README is the technical reference for installing, building, and extending the package. See [examples/minimal](examples/minimal/) for sample `docs/ai/` artifacts.
+**Using the system in your projects?** Start with [GUIDE.md](GUIDE.md) (philosophy, workflows, commands/skills reference). This README is the technical reference for installing, building, and extending the package. See [examples/minimal](examples/minimal/) for sample `docs/ai/` artifacts. Release history: [CHANGELOG.md](CHANGELOG.md).
+
+## When to use
+
+Structured AI-assisted workflow for **solo developers and small teams** building TypeScript full-stack apps (React/Next.js, Node/NestJS). Install when you want a repeatable process, artifacts in `docs/ai/` as a paper trail, and slash commands that keep the agent on scope.
+
+| Situation | Use ai-dev-system? |
+|---|---|
+| Greenfield app; want brief → design → plan before code | **Yes** — full workflow |
+| Solo maintainer; context lost between sessions | **Yes** — commit `docs/ai/` as memory |
+| Small fix (1–2 files, clear scope) | **Optional** — `/build-step` or skip commands |
+| Large org with mandatory gates / no fixed doc shapes | **No** |
+| You want the agent to freestyle without schemas | **No** |
+
+Default stack is TypeScript full-stack; other stacks work if you add or fork skills. See [GUIDE — Who this is for](GUIDE.md#who-this-is-for).
 
 ## Quickstart (use in a project)
 
@@ -24,7 +38,15 @@ This writes into your project:
 | `.cursor/schemas/` | Output document shapes (`BRIEF.md`, `DESIGN.md`, …) |
 | `.claude/…` | Same layout for Claude Code (omit with `--cursor-only`) |
 
-Then open the project in Cursor and run a command, e.g. `/create-brief` → `docs/ai/001-BRIEF.md`. See [GUIDE.md](GUIDE.md) for the full workflow.
+### First session
+
+1. **Install** (command above) from your app repo root.
+2. **Create** `docs/ai/` if it does not exist (`mkdir -p docs/ai`). The agent can create it too; committing the folder early avoids path confusion.
+3. **Open** the project in Cursor or Claude Code.
+4. **Run a slash command** in agent chat — type `/` and pick e.g. `/create-brief`, or use the command palette. Tell the agent the work id and path, e.g. *"Create `docs/ai/001-BRIEF.md` for work id 001."*
+5. **Commit** generated artifacts (`docs/ai/001-*.md`) so the next session can read them.
+
+Typical greenfield sequence: `/create-brief` → `/design-web` → `/plan-work` → `/build-step @set-web` (or `@set-api`) in a loop. **Always layer a skillset on `/build-step`** — stack skills are not auto-attached on empty repos. See [GUIDE — Workflows](GUIDE.md#workflows).
 
 **Pin a version** (recommended for teams):
 
@@ -33,7 +55,7 @@ AI_DEV_SYSTEM_VERSION=v1.0.0 curl -fsSL \
   https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash
 ```
 
-**Reinstall / upgrade:** run the same command again. Each install replaces the previous `.cursor/` (and `.claude/`) artifact trees.
+**Reinstall / upgrade:** run the same command again. Each install **replaces the entire** `.cursor/` and `.claude/` trees (rules, commands, skills, schemas). Custom edits inside those folders are lost unless you merge manually or maintain a fork. Your app code and `docs/ai/` are untouched.
 
 ## Two ways to install
 

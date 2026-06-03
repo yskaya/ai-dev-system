@@ -101,7 +101,7 @@ targets:                # required on every command
 
 ## Releases (maintainers)
 
-See [README — Publish a release](README.md#publish-a-release-maintainers). Tag `v*` pushes trigger CI to rebuild, package, and attach `ai-dev-system-dist.tar.gz`.
+See [README — Publish a release](README.md#publish-a-release-maintainers). Tag `v*` pushes trigger CI to rebuild, package, and attach `ai-dev-system-dist.tar.gz`. Update [CHANGELOG.md](CHANGELOG.md) when cutting releases.
 
 ## Questions
 
