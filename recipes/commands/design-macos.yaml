@@ -1,0 +1,29 @@
+name: design-macos
+description: Design and document native macOS app architecture as NNN-DESIGN.md
+extends: design
+triggers:
+  - design macos
+  - macos architecture
+  - native mac app design
+  - swift app design
+
+skills:
+  - macos-dev
+
+body: |
+  Native Swift + SwiftUI macOS app — not a web stack. Omit web stack skills unless the app embeds a web view with a real contract.
+
+  Center the document on:
+  - process boundaries (app vs helpers, XPC, loopback HTTP, CLI hooks)
+  - UI shell (menu bar, window style, login item lifecycle)
+  - concurrency (`@MainActor` UI store vs background I/O)
+  - persistence and config mutation (Keychain, Application Support, atomic writes)
+  - entitlements and trust (sandbox, privacy permissions — justify each or omit)
+
+  Layer when scope requires it:
+  - Local HTTP/WebSocket ingress → document wire contract in API contracts
+  - AI/LLM inside the app → @ai-architecture
+
+targets:
+  claude:
+    model: opus

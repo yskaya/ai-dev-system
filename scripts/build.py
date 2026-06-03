@@ -155,6 +155,10 @@ def _render_artifact(
     )
     if not template_name:
         return ""
+    if template_name in ("artifact-write", "artifact-edit"):
+        vals["artifact_header"] = _render_partial(
+            "artifact-header", {}, templates_dir=templates_dir
+        )
     return _render_partial(template_name, vals, templates_dir=templates_dir)
 
 
@@ -269,6 +273,65 @@ def _collect_recipes(paths: BuildPaths) -> dict[str, Any]:
     }
 
 
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        if item not in seen:
+            out.append(item)
+            seen.add(item)
+    return out
+
+
+def _resolve_command(
+    cmd_id: str,
+    commands: dict[str, Any],
+    *,
+    chain: tuple[str, ...] = (),
+) -> dict[str, Any]:
+    raw = commands.get(cmd_id)
+    if not raw:
+        raise SystemExit(f"unknown command {cmd_id!r}")
+    cmd = dict(raw)
+    extends = cmd.get("extends")
+    if not extends:
+        cmd.setdefault("name", cmd_id)
+        return cmd
+    if not isinstance(extends, str) or not extends.strip():
+        raise SystemExit(f"{cmd_id}: extends must be a non-empty command id")
+    parent_id = extends.strip()
+    if parent_id not in commands:
+        raise SystemExit(f"{cmd_id}: extends unknown command {parent_id!r}")
+    if parent_id in chain:
+        raise SystemExit(f"{cmd_id}: circular extends chain ({' -> '.join(chain + (cmd_id,))})")
+    parent = _resolve_command(parent_id, commands, chain=chain + (cmd_id,))
+
+    merged: dict[str, Any] = {}
+    for key in set(parent) | set(cmd):
+        if key == "extends":
+            continue
+        if key not in cmd or cmd[key] is None:
+            merged[key] = parent.get(key)
+            continue
+        if key == "skills":
+            p_skills = parent.get("skills") or []
+            c_skills = cmd.get("skills") or []
+            if isinstance(p_skills, list) and isinstance(c_skills, list):
+                merged[key] = _dedupe_preserve_order([*(str(s) for s in p_skills), *(str(s) for s in c_skills)])
+            else:
+                merged[key] = cmd[key]
+        elif key == "triggers":
+            merged[key] = cmd[key]
+        elif key == "body":
+            p_body = (parent.get("body") or "").rstrip()
+            c_body = (cmd.get("body") or "").rstrip()
+            merged[key] = f"{p_body}\n\n{c_body}".strip() if p_body and c_body else (c_body or p_body)
+        else:
+            merged[key] = cmd[key]
+    merged["name"] = (cmd.get("name") or cmd_id).strip()
+    return merged
+
+
 def _expand_command_skills(raw: Any, skillsets: dict[str, Any]) -> list[str]:
     if not raw:
         return []
@@ -370,6 +433,7 @@ def _render_command(
     artifact_dir: str,
     templates_dir: Path = TEMPLATES_DIR,
 ) -> str:
+    cmd = _resolve_command(cmd_id, commands)
     description = _single_quote_yaml(str(cmd.get("description") or cmd_id))
     skills = _expand_command_skills(cmd.get("skills"), skillsets)
 

@@ -1,15 +1,12 @@
 name: design-web
-description: Design and document full-stack architecture as NNN-DESIGN.md
+description: Design and document full-stack web architecture as NNN-DESIGN.md
+extends: design
 triggers:
   - design web
-  - design architecture
-  - system design
   - full-stack design
+  - web architecture
 
-source: schemas/DESIGN.md
-output: NNN-DESIGN.md
 skills:
-  - architecture-docs
   - backend-architecture
   - frontend-architecture
   - auth
@@ -17,9 +14,7 @@ skills:
   - set-api
 
 body: |
-  Read NNN-BRIEF.md when present.
-
-  Treat frontend and backend equally; center the document on their contract (API shape, auth boundaries, data flow).
+  Full-stack web app — treat frontend and backend equally; center the document on their contract (API shape, auth boundaries, data flow).
 
   Layer when scope requires it:
   - LLM/RAG/chat/generation → @ai-architecture

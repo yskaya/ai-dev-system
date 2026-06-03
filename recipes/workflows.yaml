@@ -4,10 +4,18 @@
 commands:
   create-brief:
     review: MVP scope, non-goals, success criteria
-    next: design-web
+    next: design
+
+  design:
+    review: module boundaries, contracts, trust model — run /design-web or /design-macos when platform-specific
+    next: plan-work
 
   design-web:
     review: API contract, auth boundaries, data flow
+    next: plan-work
+
+  design-macos:
+    review: module map, wire/IPC contracts, entitlements, concurrency boundaries
     next: plan-work
 
   plan-work:

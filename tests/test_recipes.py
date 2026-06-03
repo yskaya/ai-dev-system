@@ -121,6 +121,28 @@ class TestRecipes(unittest.TestCase):
             if ref:
                 self.assertIn(ref, command_ids, f"{cmd_id}.next: unknown command {ref!r}")
 
+    def test_command_extends_resolves(self) -> None:
+        from scripts.build import _resolve_command
+
+        commands = {
+            "design": {
+                "source": "schemas/DESIGN.md",
+                "output": "NNN-DESIGN.md",
+                "skills": ["architecture-docs"],
+                "body": "Base body.",
+            },
+            "design-web": {
+                "extends": "design",
+                "skills": ["auth"],
+                "body": "Web body.",
+            },
+        }
+        merged = _resolve_command("design-web", commands)
+        self.assertEqual(merged["source"], "schemas/DESIGN.md")
+        self.assertEqual(merged["skills"], ["architecture-docs", "auth"])
+        self.assertIn("Base body.", merged["body"])
+        self.assertIn("Web body.", merged["body"])
+
 
 if __name__ == "__main__":
     unittest.main()

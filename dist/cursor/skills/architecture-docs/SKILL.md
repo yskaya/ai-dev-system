@@ -15,6 +15,11 @@ Avoid:
 
 **Artifact (required)**
 - Read `schemas/DESIGN.md` before writing.
-- Update sections `Technical complexity`, `Key decisions` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Ensure the file starts with this header; prepend if missing (verbatim):
+<!--
+******************************************************
+*****                AI GENERATED                *****
+******************************************************
+-->
+- Update sections `Technical complexity`, `Key decisions` in `docs/ai/NNN-DESIGN.md` on disk — not chat-only.
 - Leave other sections unchanged.
-- Use schema headings exactly; substitute real work id (`001`) when known.

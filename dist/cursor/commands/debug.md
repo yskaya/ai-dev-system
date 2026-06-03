@@ -15,8 +15,13 @@ Avoid:
 
 **Artifact (required)**
 - Read `schemas/ISSUES.md` before writing.
-- Write `docs/ai/ISSUES.md` on disk — not chat-only. Create `docs/ai/` if missing.
-- Use schema headings exactly; substitute real work id (`001`) when known.
+- Prepend this header at the very top of the file (verbatim):
+<!--
+******************************************************
+*****                AI GENERATED                *****
+******************************************************
+-->
+- Write `docs/ai/ISSUES.md` on disk — not chat-only. Create `docs/ai/` if missing. Use schema headings exactly.
 
 ### Next Step
 Review `docs/ai/ISSUES.md` and run `/build-step`

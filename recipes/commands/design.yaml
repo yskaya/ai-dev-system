@@ -1,0 +1,20 @@
+name: design
+description: Design and document system architecture as NNN-DESIGN.md
+triggers:
+  - design
+  - architecture design
+  - system design
+
+source: schemas/DESIGN.md
+output: NNN-DESIGN.md
+skills:
+  - architecture-docs
+
+body: |
+  Read NNN-BRIEF.md when present.
+
+  Document constraints, module boundaries, contracts, data flow, trust model, and key decisions — stay platform-agnostic unless a specialized design command applies.
+
+targets:
+  claude:
+    model: opus

@@ -82,8 +82,9 @@ targets:                # required on every command
 ```
 
 2. Add an entry in `recipes/workflows.yaml` — **every command must have one**. Tests enforce coverage.
-3. If the command references a schema, ensure the file exists and is listed in `recipes/outputs.yaml`.
-4. Rebuild and test.
+3. Optional `extends: <command-id>` merges parent `source`/`output`/skills/body; child overrides `description`, `triggers`, and `targets`.
+4. If the command references a schema, ensure the file exists and is listed in `recipes/outputs.yaml`.
+5. Rebuild and test.
 
 **Skillset rule:** mixed skillsets (e.g. `set-microservice` = stack + design mode) must **not** appear in a command's `skills:` list. Users layer those with `@set-microservice` at invoke time. Enforced in `tests/test_recipes.py`.
 

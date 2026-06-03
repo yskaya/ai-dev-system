@@ -18,8 +18,13 @@ Auth, input handling, or external integrations → run `/review-security`, then 
 
 **Artifact (required)**
 - Read `schemas/REVIEW.md` before writing.
-- Write `docs/ai/NNN-REVIEW.md` on disk — not chat-only. Create `docs/ai/` if missing.
-- Use schema headings exactly; substitute real work id (`001`) when known.
+- Prepend this header at the very top of the file (verbatim):
+<!--
+******************************************************
+*****                AI GENERATED                *****
+******************************************************
+-->
+- Write `docs/ai/NNN-REVIEW.md` on disk — not chat-only. Create `docs/ai/` if missing. Use schema headings exactly.
 
 ### Next Step
 Review `docs/ai/NNN-REVIEW.md` and run `/doc-pr`

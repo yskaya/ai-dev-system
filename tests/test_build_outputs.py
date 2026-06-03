@@ -61,7 +61,7 @@ class TestProductionBuild(unittest.TestCase):
         cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
         self.assertIn("Write `docs/custom/NNN-BRIEF.md`", cmd)
         self.assertIn("Create `docs/custom/` if missing", cmd)
-        self.assertIn("Review `docs/custom/NNN-BRIEF.md` and run `/design-web`", cmd)
+        self.assertIn("Review `docs/custom/NNN-BRIEF.md` and run `/design`", cmd)
         subprocess.run(
             ["python3", "scripts/build.py", "all"],
             cwd=str(ROOT),
@@ -73,7 +73,7 @@ class TestProductionBuild(unittest.TestCase):
 
     def test_create_brief_handoff_is_compact(self) -> None:
         cmd = read_text(ROOT / "dist/cursor/commands/create-brief.md")
-        self.assertIn("Review `docs/ai/NNN-BRIEF.md` and run `/design-web`", cmd)
+        self.assertIn("Review `docs/ai/NNN-BRIEF.md` and run `/design`", cmd)
         self.assertNotIn("Alternatively:", cmd)
 
     def test_commands_with_artifact_write_docs_ai(self) -> None:

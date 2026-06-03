@@ -1,6 +1,6 @@
 ---
-description: 'Design and document full-stack architecture as NNN-DESIGN.md'
-triggers: '"design web", "design architecture", "system design", "full-stack design"'
+description: 'Design and document full-stack web architecture as NNN-DESIGN.md'
+triggers: '"design web", "full-stack design", "web architecture"'
 model: opus
 ---
 
@@ -8,7 +8,9 @@ Skills: @architecture-docs @backend-architecture @frontend-architecture @auth @s
 
 Read NNN-BRIEF.md when present.
 
-Treat frontend and backend equally; center the document on their contract (API shape, auth boundaries, data flow).
+Document constraints, module boundaries, contracts, data flow, trust model, and key decisions — stay platform-agnostic unless a specialized design command applies.
+
+Full-stack web app — treat frontend and backend equally; center the document on their contract (API shape, auth boundaries, data flow).
 
 Layer when scope requires it:
 - LLM/RAG/chat/generation → @ai-architecture
@@ -18,8 +20,13 @@ Layer when scope requires it:
 
 **Artifact (required)**
 - Read `schemas/DESIGN.md` before writing.
-- Write `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing.
-- Use schema headings exactly; substitute real work id (`001`) when known.
+- Prepend this header at the very top of the file (verbatim):
+<!--
+******************************************************
+*****                AI GENERATED                *****
+******************************************************
+-->
+- Write `docs/ai/NNN-DESIGN.md` on disk — not chat-only. Create `docs/ai/` if missing. Use schema headings exactly.
 
 ### Next Step
 Review `docs/ai/NNN-DESIGN.md` and run `/plan-work`

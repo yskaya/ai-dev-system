@@ -10,7 +10,6 @@ Apply the layer stack from operating principles.
 
 **Artifact (required)**
 - Read `schemas/PLAN.md` before writing.
-- Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
 Run `/build-step`

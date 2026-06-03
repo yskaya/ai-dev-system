@@ -21,9 +21,14 @@ Avoid:
 
 **Artifact (required)**
 - Read `schemas/REVIEW.md` before writing.
-- Update sections `Security` in `docs/ai/NNN-REVIEW.md` on disk — not chat-only. Create `docs/ai/` if missing.
+- Ensure the file starts with this header; prepend if missing (verbatim):
+<!--
+******************************************************
+*****                AI GENERATED                *****
+******************************************************
+-->
+- Update sections `Security` in `docs/ai/NNN-REVIEW.md` on disk — not chat-only.
 - Leave other sections unchanged.
-- Use schema headings exactly; substitute real work id (`001`) when known.
 
 ### Next Step
 Review `docs/ai/NNN-REVIEW.md` (Security) and run `/doc-pr`
