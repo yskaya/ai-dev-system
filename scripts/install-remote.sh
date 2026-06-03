@@ -8,7 +8,7 @@
 #
 # Environment:
 #   AI_DEV_SYSTEM_REPO      GitHub repo (default: yskaya/ai-dev-system)
-#   AI_DEV_SYSTEM_VERSION   Release tag, e.g. v1.0.0 (default: latest release, else main)
+#   AI_DEV_SYSTEM_VERSION   Release tag, e.g. v0.1.0 (default: latest release, else main)
 #   AI_DEV_SYSTEM_REF        Branch for source fallback (default: main)
 #   AI_DEV_SYSTEM_TARBALL    Local path to dist tarball (skips download; for testing)
 set -euo pipefail

@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. Version tags follow [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] - 2026-06-02
+## [0.1.0] - 2026-06-02
 
 First public release — portable prompt system for Cursor and Claude Code.
 
@@ -25,4 +25,4 @@ First public release — portable prompt system for Cursor and Claude Code.
 - **Cursor:** `.mdc` rules, path-scoped skills, slash commands with workflow handoffs
 - **Claude Code:** rules with `paths`, command `triggers` and `model` routing (Opus for design/review, Sonnet for planning)
 
-[1.0.0]: https://github.com/yskaya/ai-dev-system/releases/tag/v1.0.0
+[0.1.0]: https://github.com/yskaya/ai-dev-system/releases/tag/v0.1.0

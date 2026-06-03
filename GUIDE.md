@@ -42,7 +42,7 @@ From your app repo (no clone, no Python):
 curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash
 ```
 
-This copies predefined rules, commands, skills, and schemas into `.cursor/` (and `.claude/` unless you pass `--cursor-only`). Pin a version with `AI_DEV_SYSTEM_VERSION=v1.0.0` when [releases](https://github.com/yskaya/ai-dev-system/releases) exist.
+This copies predefined rules, commands, skills, and schemas into `.cursor/` (and `.claude/` unless you pass `--cursor-only`). Pin a version with `AI_DEV_SYSTEM_VERSION=v0.1.0` when [releases](https://github.com/yskaya/ai-dev-system/releases) exist.
 
 **Overwrite warning:** install replaces the entire `.cursor/` and `.claude/` artifact trees. Do not mix personal slash commands or rules in those folders unless you accept losing them on reinstall — use a fork with `AI_DEV_SYSTEM_REPO`, or patch after install and skip upgrades.
 

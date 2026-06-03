@@ -2,7 +2,7 @@
 
 Portable prompt system for **Cursor** and **Claude Code**: skills, slash commands, always-on rules, and output-document schemas. Edit YAML/Markdown in `recipes/`; build emits installable artifacts in `dist/`.
 
-**Repo:** [github.com/yskaya/ai-dev-system](https://github.com/yskaya/ai-dev-system) · **Latest release:** [v1.0.0](https://github.com/yskaya/ai-dev-system/releases) · **License:** [MIT](LICENSE)
+**Repo:** [github.com/yskaya/ai-dev-system](https://github.com/yskaya/ai-dev-system) · **Latest release:** [v0.1.0](https://github.com/yskaya/ai-dev-system/releases) · **License:** [MIT](LICENSE)
 
 **Using the system in your projects?** Start with [GUIDE.md](GUIDE.md) (philosophy, workflows, commands/skills reference). This README is the technical reference for installing, building, and extending the package. See [examples/minimal](examples/minimal/) for sample `docs/ai/` artifacts. Release history: [CHANGELOG.md](CHANGELOG.md).
 
@@ -51,7 +51,7 @@ Typical greenfield sequence: `/create-brief` → `/design-web` → `/plan-work` 
 **Pin a version** (recommended for teams):
 
 ```bash
-AI_DEV_SYSTEM_VERSION=v1.0.0 curl -fsSL \
+AI_DEV_SYSTEM_VERSION=v0.1.0 curl -fsSL \
   https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/install-remote.sh | bash
 ```
 
@@ -103,7 +103,7 @@ curl -fsSL https://raw.githubusercontent.com/yskaya/ai-dev-system/main/scripts/i
 | Variable | Default | Purpose |
 |---|---|---|
 | `AI_DEV_SYSTEM_REPO` | `yskaya/ai-dev-system` | GitHub `owner/repo` |
-| `AI_DEV_SYSTEM_VERSION` | *(latest release)* | Pin to a tag, e.g. `v1.0.0` |
+| `AI_DEV_SYSTEM_VERSION` | *(latest release)* | Pin to a tag, e.g. `v0.1.0` |
 | `AI_DEV_SYSTEM_REF` | `main` | Branch for source-archive fallback |
 
 ### Local install (from a clone)
@@ -141,8 +141,8 @@ python3 -m unittest discover -s tests
 git add -A && git commit -m "..." && git push origin main
 
 # 3. Tag and push — CI publishes the release tarball
-git tag v1.0.1
-git push origin v1.0.1
+git tag v0.1.1
+git push origin v0.1.1
 ```
 
 The [Release workflow](.github/workflows/release.yml) on tag push (`v*`):
@@ -152,14 +152,14 @@ The [Release workflow](.github/workflows/release.yml) on tag push (`v*`):
 3. Packages `ai-dev-system-dist.tar.gz` via `scripts/package-release.sh`
 4. Creates a [GitHub release](https://github.com/yskaya/ai-dev-system/releases) with the tarball attached
 
-Remote install picks up the new version automatically (or users pin with `AI_DEV_SYSTEM_VERSION=v1.0.1`).
+Remote install picks up the new version automatically (or users pin with `AI_DEV_SYSTEM_VERSION=v0.1.1`).
 
 **First-time repo setup** (one-time):
 
 ```bash
 gh auth login
 gh repo create yskaya/ai-dev-system --public --source=. --remote=origin --push
-git tag v1.0.0 && git push origin v1.0.0
+git tag v0.1.0 && git push origin v0.1.0
 ```
 
 Use your actual GitHub username in place of `yskaya` if forking.
